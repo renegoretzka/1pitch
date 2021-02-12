@@ -1,0 +1,73 @@
+{
+    "identityPoolName": "1PitchIdentityPool",
+    "allowUnauthenticatedIdentities": true,
+    "resourceNameTruncated": "1pitch12f5e31f",
+    "userPoolName": "1PitchIdentityPool",
+    "autoVerifiedAttributes": [
+        "email"
+    ],
+    "mfaConfiguration": "OPTIONAL",
+    "mfaTypes": [
+        "SMS Text Message"
+    ],
+    "smsAuthenticationMessage": "Your authentication code for 1Pitch is {####}",
+    "smsVerificationMessage": "Your verification code for 1Pitch is {####}",
+    "emailVerificationSubject": "Your authentication code for 1Pitch",
+    "emailVerificationMessage": "Your verification code for 1Pitch is {####}",
+    "defaultPasswordPolicy": false,
+    "passwordPolicyMinLength": 8,
+    "passwordPolicyCharacters": [],
+    "requiredAttributes": [
+        "email"
+    ],
+    "userpoolClientGenerateSecret": false,
+    "userpoolClientRefreshTokenValidity": 30,
+    "userpoolClientWriteAttributes": [
+        "gender",
+        "name",
+        "phone_number",
+        "email"
+    ],
+    "userpoolClientReadAttributes": [
+        "email",
+        "gender",
+        "name",
+        "email_verified"
+    ],
+    "userpoolClientLambdaRole": "1Pitch12f5e31f_userpoolclient_lambda_role",
+    "userpoolClientSetAttributes": true,
+    "sharedId": "12f5e31f",
+    "resourceName": "1Pitch",
+    "authSelections": "identityPoolAndUserPool",
+    "authRoleArn": {
+        "Fn::GetAtt": [
+            "AuthRole",
+            "Arn"
+        ]
+    },
+    "unauthRoleArn": {
+        "Fn::GetAtt": [
+            "UnauthRole",
+            "Arn"
+        ]
+    },
+    "useDefault": "manual",
+    "thirdPartyAuth": false,
+    "usernameAttributes": [
+        "email, phone_number"
+    ],
+    "userPoolGroups": true,
+    "adminQueries": false,
+    "triggers": "{}",
+    "hostedUI": false,
+    "userPoolGroupList": [
+        "admin"
+    ],
+    "serviceName": "Cognito",
+    "usernameCaseSensitive": false,
+    "parentStack": {
+        "Ref": "AWS::StackId"
+    },
+    "permissions": [],
+    "dependsOn": []
+}

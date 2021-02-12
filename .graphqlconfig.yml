@@ -1,0 +1,15 @@
+projects:
+  1pitch:
+    schemaPath: 'C:/Projekte/1Pitch/graphql/schema.json'
+    includes:
+      - src/graphql/**/*.js
+    excludes:
+      - ./amplify/**
+    extensions:
+      amplify:
+        codeGenTarget: javascript
+        generatedFileName: ''
+        docsFilePath: 'C:/Projekte/1Pitch/graphql'
+extensions:
+  amplify:
+    version: 3

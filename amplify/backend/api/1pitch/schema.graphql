@@ -1,0 +1,126 @@
+type User
+  @model
+  @key(name: "getUserByEmail", fields: ["email"])
+  @auth(
+    rules: [
+      { allow: owner, ownerField: "id" }
+      { allow: private, operations: [read] }
+      { allow: public, operations: [read], provider: iam }
+    ]
+  ) {
+  id: ID!
+  email: AWSEmail
+  phone: AWSPhone
+  fullname: String
+  avatar: S3Object
+  bio: String
+  linkedIn: String
+  teams: [Team] @connection
+  createdAt: AWSDateTime
+}
+
+type Team
+  @model
+  @auth(
+    rules: [
+      { allow: owner, ownerField: "members" }
+      { allow: private, operations: [read] }
+      { allow: public, operations: [read], provider: iam }
+    ]
+  ) {
+  id: ID!
+  name: String
+  logo: S3Object
+  summary: String
+  members: [User] @connection
+}
+
+type Startup
+  @model
+  #@key(name: "startupByMembers", fields: ["team"])
+  @auth(
+    rules: [
+      { allow: owner, ownerField: "team" }
+      { allow: private, operations: [read] }
+      { allow: public, operations: [read], provider: iam }
+    ]
+  ) {
+  id: ID!
+  name: String
+  logo: S3Object
+  summary: String
+  pitch: S3Object
+  industries: [Industry] @connection
+  stage: [StageEnum]
+  capitalDemand: Int
+  team: [User] @connection
+  createdAt: AWSDateTime
+}
+
+type Investor
+  @model
+  #@key(name: "investorByMembers", fields: ["team"])
+  @auth(
+    rules: [
+      { allow: owner, ownerField: "team" }
+      { allow: private, operations: [read] }
+      { allow: public, operations: [read], provider: iam }
+    ]
+  ) {
+  id: ID!
+  name: String
+  logo: S3Object
+  summary: String
+  industries: [Industry] @connection
+  stage: [StageEnum]
+  capitalInvestMin: Int
+  capitalInvestMax: Int
+  team: [User] @connection
+  bookmarks: [Startup] @connection
+  channels: [Channel] @connection
+  createdAt: AWSDateTime
+}
+
+type Channel
+  @model
+  @auth(
+    rules: [
+      { allow: owner, ownerField: "startup", operations: [read] }
+      { allow: owner, ownerField: "investor", operations: [read] }
+    ]
+  ) {
+  id: ID!
+  startup: Startup @connection
+  investor: Investor @connection
+  messages: [Message] @connection
+  createdAt: AWSDateTime
+}
+
+type Message @model @auth(rules: [{ allow: owner, ownerField: "sender" }]) {
+  id: ID!
+  sender: User @connection
+  channel: Channel @connection
+  content: String
+  createdAt: AWSDateTime
+  updatedAt: AWSDateTime
+}
+
+type Industry @model @auth(rules: [{ allow: groups, groups: ["admin"] }]) {
+  id: ID!
+  name: String
+  startups: [Startup] @connection
+  investors: [Investor] @connection
+}
+
+enum StageEnum {
+  IDEA
+  BUSINESS_PLAN
+  MVP
+  PAYING_CUSTOMERS
+}
+
+type S3Object {
+  bucket: String!
+  region: String!
+  key: String!
+}
