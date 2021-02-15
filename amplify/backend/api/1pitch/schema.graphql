@@ -21,7 +21,7 @@ type User
 }
 
 type TeamUserLink
-  @model
+  @model(queries: null)
   @key(name: "usersByTeam", fields: ["teamID"])
   @key(name: "teamsByUser", fields: ["userID"]) {
   id: ID!
@@ -31,7 +31,14 @@ type TeamUserLink
   team: Team @connection(fields: ["teamID"])
 }
 
-type Team @model {
+type Team
+  @model(mutations: null)
+  @auth(
+    rules: [
+      { allow: private, operations: [read] }
+      { allow: public, operations: [read], provider: iam }
+    ]
+  ) {
   id: ID!
   name: String
   logo: S3Object
@@ -126,4 +133,20 @@ type S3Object {
   bucket: String!
   region: String!
   key: String!
+}
+input S3ObjectInput {
+  bucket: String!
+  region: String!
+  key: String!
+}
+
+input UpdateTeamAuthorizedInput {
+  id: ID!
+  name: String
+  logo: S3ObjectInput
+}
+type Mutation {
+  updateTeamAuthorized(input: UpdateTeamAuthorizedInput!): Team
+    @function(name: "1PitchTeamAuthorizer-${env}")
+    @function(name: "1PitchUpdateTeam-${env}")
 }

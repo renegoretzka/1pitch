@@ -20,9 +20,13 @@
           "deploymentBucketName": "amplify-1pitch-dev-121703-deployment",
           "s3Key": "amplify-builds/processUserRegistration-70476b32474866563079-build.zip"
         },
-        "1PitchTeamRead": {
+        "1PitchTeamAuthorizer": {
           "deploymentBucketName": "amplify-1pitch-dev-121703-deployment",
-          "s3Key": "amplify-builds/1PitchTeamRead-6a4864314e4769496636-build.zip"
+          "s3Key": "amplify-builds/1PitchTeamAuthorizer-796f5173642f42473531-build.zip"
+        },
+        "1PitchUpdateTeam": {
+          "deploymentBucketName": "amplify-1pitch-dev-121703-deployment",
+          "s3Key": "amplify-builds/1PitchUpdateTeam-54545a7939415a4f456f-build.zip"
         }
       }
     }

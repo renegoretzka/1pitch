@@ -66,24 +66,30 @@
         }
       ]
     },
-    "1PitchTeamRead": {
+    "1PitchTeamAuthorizer": {
       "build": true,
       "providerPlugin": "awscloudformation",
       "service": "Lambda",
       "dependsOn": [
         {
-          "category": "auth",
-          "resourceName": "1Pitch",
+          "category": "api",
+          "resourceName": "1pitch",
           "attributes": [
-            "UserPoolId"
+            "GraphQLAPIIdOutput"
           ]
-        },
+        }
+      ]
+    },
+    "1PitchUpdateTeam": {
+      "build": true,
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda",
+      "dependsOn": [
         {
           "category": "api",
           "resourceName": "1pitch",
           "attributes": [
-            "GraphQLAPIIdOutput",
-            "GraphQLAPIEndpointOutput"
+            "GraphQLAPIIdOutput"
           ]
         }
       ]

@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "storage": {
+      "TeamUserLink:@model(appsync)": [
+        "read"
+      ]
+    }
+  },
+  "lambdaLayers": []
+}

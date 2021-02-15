@@ -1,13 +1,7 @@
 /* Amplify Params - DO NOT EDIT
-	API_1PITCH_GRAPHQLAPIENDPOINTOUTPUT
 	API_1PITCH_GRAPHQLAPIIDOUTPUT
-	API_1PITCH_TEAMTABLE_ARN
-	API_1PITCH_TEAMTABLE_NAME
 	API_1PITCH_TEAMUSERLINKTABLE_ARN
 	API_1PITCH_TEAMUSERLINKTABLE_NAME
-	API_1PITCH_USERTABLE_ARN
-	API_1PITCH_USERTABLE_NAME
-	AUTH_1PITCH_USERPOOLID
 	ENV
 	REGION
 Amplify Params - DO NOT EDIT */
@@ -15,15 +9,12 @@ Amplify Params - DO NOT EDIT */
 const aws = require("aws-sdk");
 const ddb = new aws.DynamoDB();
 
-let response;
-
 exports.handler = async (event) => {
   try {
-    console.log(event);
     const params = {
       ExpressionAttributeValues: {
         ":teamId": {
-          S: event.source.id,
+          S: event.arguments.input.id,
         },
       },
       KeyConditionExpression: "teamID = :teamId",
@@ -36,9 +27,9 @@ exports.handler = async (event) => {
     const isAuthorized = members.Items.some(
       ({ userID }) => userID.S === event.identity.sub
     );
+    console.log("user authorized:", isAuthorized);
     return {
       authorized: isAuthorized,
-      response: event.source[event.info.fieldName],
     };
   } catch (error) {
     console.log(error);
