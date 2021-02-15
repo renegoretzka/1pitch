@@ -14,6 +14,16 @@
     "categories": {
       "auth": {
         "1Pitch": {}
+      },
+      "function": {
+        "processUserRegistration": {
+          "deploymentBucketName": "amplify-1pitch-dev-121703-deployment",
+          "s3Key": "amplify-builds/processUserRegistration-70476b32474866563079-build.zip"
+        },
+        "1PitchTeamRead": {
+          "deploymentBucketName": "amplify-1pitch-dev-121703-deployment",
+          "s3Key": "amplify-builds/1PitchTeamRead-6a4864314e4769496636-build.zip"
+        }
       }
     }
   }

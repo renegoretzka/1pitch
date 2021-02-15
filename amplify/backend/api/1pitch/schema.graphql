@@ -11,33 +11,37 @@ type User
   id: ID!
   email: AWSEmail
   phone: AWSPhone
-  fullname: String
+  firstname: String
+  lastname: String
   avatar: S3Object
   bio: String
   linkedIn: String
-  teams: [Team] @connection
+  teams: [TeamUserLink] @connection(keyName: "teamsByUser", fields: ["id"])
   createdAt: AWSDateTime
 }
 
-type Team
+type TeamUserLink
   @model
-  @auth(
-    rules: [
-      { allow: owner, ownerField: "members" }
-      { allow: private, operations: [read] }
-      { allow: public, operations: [read], provider: iam }
-    ]
-  ) {
+  @key(name: "usersByTeam", fields: ["teamID"])
+  @key(name: "teamsByUser", fields: ["userID"]) {
+  id: ID!
+  userID: ID!
+  user: User @connection(fields: ["userID"])
+  teamID: ID!
+  team: Team @connection(fields: ["teamID"])
+}
+
+type Team @model {
   id: ID!
   name: String
   logo: S3Object
-  summary: String
-  members: [User] @connection
+  members: [TeamUserLink] @connection(keyName: "usersByTeam", fields: ["id"])
+  startup: Startup
+  investor: Investor
 }
 
 type Startup
   @model
-  #@key(name: "startupByMembers", fields: ["team"])
   @auth(
     rules: [
       { allow: owner, ownerField: "team" }
@@ -53,13 +57,12 @@ type Startup
   industries: [Industry] @connection
   stage: [StageEnum]
   capitalDemand: Int
-  team: [User] @connection
+  team: Team @connection
   createdAt: AWSDateTime
 }
 
 type Investor
   @model
-  #@key(name: "investorByMembers", fields: ["team"])
   @auth(
     rules: [
       { allow: owner, ownerField: "team" }

@@ -1,0 +1,19 @@
+{
+  "permissions": {
+    "auth": {
+      "1Pitch": [
+        "create",
+        "read",
+        "update"
+      ]
+    },
+    "storage": {
+      "User:@model(appsync)": [
+        "create",
+        "read",
+        "update"
+      ]
+    }
+  },
+  "lambdaLayers": []
+}
