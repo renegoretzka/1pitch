@@ -134,19 +134,26 @@ type S3Object {
   region: String!
   key: String!
 }
+
+type Mutation {
+  updateTeam(input: UpdateTeamInput!): Team
+    @function(name: "1PitchTeamAuthorizer-${env}")
+    @function(name: "1PitchTeam-${env}")
+  deleteTeam(input: DeleteTeamInput!): Team
+    @function(name: "1PitchTeamAuthorizer-${env}")
+    @function(name: "1PitchTeam-${env}")
+}
+
 input S3ObjectInput {
   bucket: String!
   region: String!
   key: String!
 }
-
-input UpdateTeamAuthorizedInput {
+input UpdateTeamInput {
   id: ID!
   name: String
   logo: S3ObjectInput
 }
-type Mutation {
-  updateTeamAuthorized(input: UpdateTeamAuthorizedInput!): Team
-    @function(name: "1PitchTeamAuthorizer-${env}")
-    @function(name: "1PitchUpdateTeam-${env}")
+input DeleteTeamInput {
+  id: ID
 }

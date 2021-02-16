@@ -20,28 +20,9 @@ exports.handler = async (event, { done, fail }) => {
         TableName: TableName,
         Key: {
           id: args.id
-        },
-        UpdateExpression: '',
-        ExpressionAttributeNames: {},
-        ExpressionAttributeValues: {},
-        ReturnValues: 'UPDATED_NEW'
-      }
-      let prefix = 'set '
-      const attributes = Object.keys(args)
-
-      for (let i = 0; i < attributes.length; i++) {
-        const attribute = attributes[i]
-
-        if (attribute !== 'id') {
-          params.UpdateExpression +=
-            prefix + '#' + attribute + ' = :' + attribute
-          params.ExpressionAttributeValues[':' + attribute] = args[attribute]
-          params.ExpressionAttributeNames['#' + attribute] = attribute
-          prefix = ', '
         }
       }
-
-      await ddb.update(params).promise()
+      await ddb.delete(params).promise()
       done(null, args)
     } else {
       fail(null, 'Unauthorized')

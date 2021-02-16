@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "storage": {
+      "Team:@model(appsync)": [
+        "delete"
+      ]
+    }
+  },
+  "lambdaLayers": []
+}

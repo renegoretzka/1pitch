@@ -1,0 +1,33 @@
+{
+  "typeName":"Mutation",
+  "fieldName":"updateTeam",
+  "arguments":{
+    "input":{
+      "id":"afe19de0-0055-4a56-8548-1a4043c5ee53",
+      "name":"Alpha Team"
+    }
+  },
+  "identity":{
+    "claims":{
+      "sub":"40d8608e-0347-4fd0-94d5-63ba35867a23",
+      "aud":"68gu32tibmijqemof0sqkmu5fm",
+      "email_verified":true,
+      "event_id":"f944ffaa-4579-4cb0-8527-324ecc617c03",
+      "token_use":"id",
+      "auth_time":1613394873,
+      "iss":"https://cognito-idp.eu-central-1.amazonaws.com/eu-central-1_ilyB85DHQ",
+      "cognito:username":"40d8608e-0347-4fd0-94d5-63ba35867a23",
+      "exp":1613426521,
+      "iat":1613422921,
+      "email":"rene@renka.de"
+    },
+    "defaultAuthStrategy":"ALLOW",
+    "groups":null,
+    "issuer":"https://cognito-idp.eu-central-1.amazonaws.com/eu-central-1_ilyB85DHQ",
+    "sourceIp":[
+      "79.255.164.11"
+    ],
+    "sub":"40d8608e-0347-4fd0-94d5-63ba35867a23",
+    "username":"40d8608e-0347-4fd0-94d5-63ba35867a23"
+  }
+}
