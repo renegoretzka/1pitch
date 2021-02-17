@@ -8,7 +8,6 @@ Amplify Params - DO NOT EDIT */
 
 const aws = require('aws-sdk')
 const ddb = new aws.DynamoDB()
-
 exports.handler = async (event) => {
   try {
     const params = {
@@ -28,6 +27,7 @@ exports.handler = async (event) => {
       ({ userID }) => userID.S === event.identity.sub
     )
     console.log('user authorized:', isAuthorized)
+
     return {
       authorized: isAuthorized
     }

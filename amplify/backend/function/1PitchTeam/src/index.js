@@ -13,12 +13,18 @@ const readModel = require('./readModel')
 const updateModel = require('./updateModel')
 const deleteModel = require('./deleteModel')
 
+class UnauthorizedError extends Error {
+  constructor(message) {
+    super(message)
+    this.name = 'Unauthorized'
+  }
+}
+
 exports.handler = async (
   { fieldName, identity, arguments: { input }, prev },
-  { fail }
+  context,
+  callback
 ) => {
-  console.log('authorized: ', prev.result.authorized)
-
   switch (fieldName) {
     case 'createTeam':
       const createdTeam = await createModel(
@@ -34,8 +40,20 @@ exports.handler = async (
       )
       return createdTeam
     case 'updateTeam':
+      if (!prev.result.authorized) {
+        callback(null, {
+          errorMessage: 'You are not authorized to perform this action',
+          errorType: 'UNAUTHORIZED'
+        })
+      }
       return await updateModel(input, process.env.API_1PITCH_TEAMTABLE_NAME)
     case 'deleteTeam':
+      if (!prev.result.authorized) {
+        callback(null, {
+          errorMessage: 'You are not authorized to perform this action',
+          errorType: 'UNAUTHORIZED'
+        })
+      }
       const deletedTeam = await deleteModel(
         input,
         process.env.API_1PITCH_TEAMTABLE_NAME

@@ -48,10 +48,9 @@ type Team
 }
 
 type Startup
-  @model
+  @model(mutations: null)
   @auth(
     rules: [
-      { allow: owner, ownerField: "team" }
       { allow: private, operations: [read] }
       { allow: public, operations: [read], provider: iam }
     ]
@@ -64,7 +63,7 @@ type Startup
   industries: [Industry] @connection
   stage: [StageEnum]
   capitalDemand: Int
-  team: Team @connection
+  team: Team! @connection
   createdAt: AWSDateTime
 }
 
@@ -72,7 +71,6 @@ type Investor
   @model
   @auth(
     rules: [
-      { allow: owner, ownerField: "team" }
       { allow: private, operations: [read] }
       { allow: public, operations: [read], provider: iam }
     ]
@@ -85,20 +83,13 @@ type Investor
   stage: [StageEnum]
   capitalInvestMin: Int
   capitalInvestMax: Int
-  team: [User] @connection
+  team: Team! @connection
   bookmarks: [Startup] @connection
   channels: [Channel] @connection
   createdAt: AWSDateTime
 }
 
-type Channel
-  @model
-  @auth(
-    rules: [
-      { allow: owner, ownerField: "startup", operations: [read] }
-      { allow: owner, ownerField: "investor", operations: [read] }
-    ]
-  ) {
+type Channel @model {
   id: ID!
   startup: Startup @connection
   investor: Investor @connection
