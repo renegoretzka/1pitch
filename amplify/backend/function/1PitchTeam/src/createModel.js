@@ -2,8 +2,16 @@ const aws = require('aws-sdk')
 const ddb = new aws.DynamoDB.DocumentClient()
 const { v4: uuid } = require('uuid')
 
-const createModel = async (model, table) => {
-  model.id = uuid()
+const createModel = async (model, table, typeName) => {
+  let timestamp = new Date()
+  timestamp = timestamp.toISOString()
+  model = {
+    ...model,
+    id: uuid(),
+    createdAt: timestamp,
+    updatedAt: timestamp,
+    __typename: typeName
+  }
   const params = {
     TableName: table,
     Item: model

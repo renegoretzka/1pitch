@@ -1,5 +1,5 @@
 type User
-  @model
+  @model(subscriptions: null)
   @key(name: "getUserByEmail", fields: ["email"])
   @auth(
     rules: [
@@ -23,7 +23,8 @@ type User
 type TeamUserLink
   @model(queries: null, mutations: null, subscriptions: null)
   @key(name: "usersByTeam", fields: ["teamID"])
-  @key(name: "teamsByUser", fields: ["userID"]) {
+  @key(name: "teamsByUser", fields: ["userID"])
+  @auth(rules: [{ allow: owner, ownerField: "userID" }]) {
   id: ID!
   userID: ID!
   user: User @connection(fields: ["userID"])
@@ -32,7 +33,7 @@ type TeamUserLink
 }
 
 type Team
-  @model(mutations: null)
+  @model(mutations: null, subscriptions: null)
   @auth(
     rules: [
       { allow: private, operations: [read] }
@@ -40,15 +41,13 @@ type Team
     ]
   ) {
   id: ID!
-  name: String
-  logo: S3Object
   members: [TeamUserLink] @connection(keyName: "usersByTeam", fields: ["id"])
-  startup: Startup
-  investor: Investor
+  startup: Startup @connection
+  investor: Investor @connection
 }
 
 type Startup
-  @model(mutations: null)
+  @model(mutations: null, subscriptions: null)
   @auth(
     rules: [
       { allow: private, operations: [read] }
@@ -60,7 +59,8 @@ type Startup
   logo: S3Object
   summary: String
   pitch: S3Object
-  industries: [Industry] @connection
+  industries: [IndustryStartupLink]
+    @connection(keyName: "industriesByStartup", fields: ["id"])
   stage: [StageEnum]
   capitalDemand: Int
   team: Team! @connection
@@ -68,7 +68,7 @@ type Startup
 }
 
 type Investor
-  @model
+  @model(mutations: null, subscriptions: null)
   @auth(
     rules: [
       { allow: private, operations: [read] }
@@ -79,7 +79,8 @@ type Investor
   name: String
   logo: S3Object
   summary: String
-  industries: [Industry] @connection
+  industries: [IndustryInvestorLink]
+    @connection(keyName: "industriesByInvestor", fields: ["id"])
   stage: [StageEnum]
   capitalInvestMin: Int
   capitalInvestMax: Int
@@ -106,11 +107,43 @@ type Message @model @auth(rules: [{ allow: owner, ownerField: "sender" }]) {
   updatedAt: AWSDateTime
 }
 
-type Industry @model @auth(rules: [{ allow: groups, groups: ["admin"] }]) {
+type Industry
+  @model(subscriptions: null)
+  @auth(
+    rules: [
+      { allow: groups, groups: ["admin"] }
+      { allow: private, operations: [read] }
+      { allow: public, operations: [read], provider: iam }
+    ]
+  ) {
   id: ID!
   name: String
-  startups: [Startup] @connection
-  investors: [Investor] @connection
+  startups: [IndustryStartupLink]
+    @connection(keyName: "startupsByIndustry", fields: ["id"])
+  investors: [IndustryInvestorLink]
+    @connection(keyName: "investorsByIndustry", fields: ["id"])
+}
+type IndustryStartupLink
+  @model(queries: null, mutations: null, subscriptions: null)
+  @key(name: "startupsByIndustry", fields: ["industryID"])
+  @key(name: "industriesByStartup", fields: ["startupID"])
+  @auth(rules: [{ allow: groups, groups: ["admin"] }]) {
+  id: ID!
+  industryID: ID!
+  industry: Industry @connection(fields: ["industryID"])
+  startupID: ID!
+  startup: Startup @connection(fields: ["startupID"])
+}
+type IndustryInvestorLink
+  @model(queries: null, mutations: null, subscriptions: null)
+  @key(name: "investorsByIndustry", fields: ["industryID"])
+  @key(name: "industriesByInvestor", fields: ["investorID"])
+  @auth(rules: [{ allow: groups, groups: ["admin"] }]) {
+  id: ID!
+  industryID: ID!
+  industry: Industry @connection(fields: ["industryID"])
+  investorID: ID!
+  investor: Investor @connection(fields: ["investorID"])
 }
 
 enum StageEnum {
@@ -127,12 +160,22 @@ type S3Object {
 }
 
 type Mutation {
-  createTeam(input: CreateTeamInput!): Team @function(name: "1PitchTeam-${env}")
   updateTeam(input: UpdateTeamInput!): Team
     @function(name: "1PitchTeamAuthorizer-${env}")
     @function(name: "1PitchTeam-${env}")
-  deleteTeam(input: DeleteTeamInput!): Team
-    @function(name: "1PitchTeamAuthorizer-${env}")
+
+  createStartup(input: CreateStartupInput!): Startup
+    @function(name: "1PitchTeam-${env}")
+  updateStartup(input: UpdateStartupInput!): Startup
+    @function(name: "1PitchTeam-${env}")
+  deleteStartup(input: DeleteStartupInput!): Startup
+    @function(name: "1PitchTeam-${env}")
+
+  createInvestor(input: CreateInvestorInput!): Investor
+    @function(name: "1PitchTeam-${env}")
+  updateInvestor(input: UpdateInvestorInput!): Investor
+    @function(name: "1PitchTeam-${env}")
+  deleteInvestor(input: DeleteInvestorInput!): Investor
     @function(name: "1PitchTeam-${env}")
 }
 
@@ -141,16 +184,67 @@ input S3ObjectInput {
   region: String!
   key: String!
 }
-input CreateTeamInput {
-  id: ID
-  name: String!
-  logo: S3ObjectInput
-}
+
 input UpdateTeamInput {
   id: ID!
   name: String
   logo: S3ObjectInput
 }
-input DeleteTeamInput {
+
+input CreateStartupInput {
+  id: ID
+  name: String!
+  logo: S3ObjectInput
+  summary: String
+  pitch: S3ObjectInput
+  stage: [StageEnum]
+  capitalDemand: Int
+  createdAt: AWSDateTime
+  startupTeamId: ID!
+  investorBookmarksId: ID
+  industryStartupsId: ID
+}
+input UpdateStartupInput {
+  id: ID!
+  name: String
+  logo: S3ObjectInput
+  summary: String
+  pitch: S3ObjectInput
+  stage: [StageEnum]
+  capitalDemand: Int
+  createdAt: AWSDateTime
+  startupTeamId: ID
+  investorBookmarksId: ID
+  industryStartupsId: ID
+}
+input DeleteStartupInput {
+  id: ID!
+}
+
+input CreateInvestorInput {
+  id: ID
+  name: String
+  logo: S3ObjectInput
+  summary: String
+  stage: [StageEnum]
+  capitalInvestMin: Int
+  capitalInvestMax: Int
+  createdAt: AWSDateTime
+  investorTeamId: ID!
+  industryInvestorsId: ID
+}
+input UpdateInvestorInput {
+  id: ID!
+  name: String
+  logo: S3ObjectInput
+  summary: String
+  stage: [StageEnum]
+  capitalInvestMin: Int
+  capitalInvestMax: Int
+  createdAt: AWSDateTime
+  investorTeamId: ID
+  industryInvestorsId: ID
+}
+input DeleteInvestorInput {
   id: ID!
 }

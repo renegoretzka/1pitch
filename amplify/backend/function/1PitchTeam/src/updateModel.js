@@ -2,6 +2,9 @@ const aws = require('aws-sdk')
 const ddb = new aws.DynamoDB.DocumentClient()
 
 const updateModel = async (model, table) => {
+  let timestamp = new Date()
+  model.updatedAt = timestamp.toISOString()
+
   const params = {
     TableName: table,
     Key: {
