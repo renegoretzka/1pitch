@@ -102,6 +102,32 @@
             },
             "API_1PITCH_GRAPHQLAPIIDOUTPUT": {
               "Ref": "api1pitchGraphQLAPIIdOutput"
+            },
+            "API_1PITCH_TEAMUSERLINKTABLE_NAME": {
+              "Fn::ImportValue": {
+                "Fn::Sub": "${api1pitchGraphQLAPIIdOutput}:GetAtt:TeamUserLinkTable:Name"
+              }
+            },
+            "API_1PITCH_TEAMUSERLINKTABLE_ARN": {
+              "Fn::Join": [
+                "",
+                [
+                  "arn:aws:dynamodb:",
+                  {
+                    "Ref": "AWS::Region"
+                  },
+                  ":",
+                  {
+                    "Ref": "AWS::AccountId"
+                  },
+                  ":table/",
+                  {
+                    "Fn::ImportValue": {
+                      "Fn::Sub": "${api1pitchGraphQLAPIIdOutput}:GetAtt:TeamUserLinkTable:Name"
+                    }
+                  }
+                ]
+              ]
             }
           }
         },
@@ -213,6 +239,68 @@
         "PolicyDocument": {
           "Version": "2012-10-17",
           "Statement": [
+            {
+              "Effect": "Allow",
+              "Action": [
+                "dynamodb:Put*",
+                "dynamodb:Create*",
+                "dynamodb:BatchWriteItem",
+                "dynamodb:Get*",
+                "dynamodb:BatchGetItem",
+                "dynamodb:List*",
+                "dynamodb:Describe*",
+                "dynamodb:Scan",
+                "dynamodb:Query",
+                "dynamodb:Update*",
+                "dynamodb:RestoreTable*",
+                "dynamodb:Delete*"
+              ],
+              "Resource": [
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:aws:dynamodb:",
+                      {
+                        "Ref": "AWS::Region"
+                      },
+                      ":",
+                      {
+                        "Ref": "AWS::AccountId"
+                      },
+                      ":table/",
+                      {
+                        "Fn::ImportValue": {
+                          "Fn::Sub": "${api1pitchGraphQLAPIIdOutput}:GetAtt:TeamUserLinkTable:Name"
+                        }
+                      }
+                    ]
+                  ]
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:aws:dynamodb:",
+                      {
+                        "Ref": "AWS::Region"
+                      },
+                      ":",
+                      {
+                        "Ref": "AWS::AccountId"
+                      },
+                      ":table/",
+                      {
+                        "Fn::ImportValue": {
+                          "Fn::Sub": "${api1pitchGraphQLAPIIdOutput}:GetAtt:TeamUserLinkTable:Name"
+                        }
+                      },
+                      "/index/*"
+                    ]
+                  ]
+                }
+              ]
+            },
             {
               "Effect": "Allow",
               "Action": [

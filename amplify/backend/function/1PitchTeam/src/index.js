@@ -1,32 +1,60 @@
 /* Amplify Params - DO NOT EDIT
-  API_1PITCH_GRAPHQLAPIIDOUTPUT
-  API_1PITCH_TEAMTABLE_ARN
-  API_1PITCH_TEAMTABLE_NAME
-  ENV
-  REGION
+	API_1PITCH_GRAPHQLAPIIDOUTPUT
+	API_1PITCH_TEAMTABLE_ARN
+	API_1PITCH_TEAMTABLE_NAME
+	API_1PITCH_TEAMUSERLINKTABLE_ARN
+	API_1PITCH_TEAMUSERLINKTABLE_NAME
+	ENV
+	REGION
 Amplify Params - DO NOT EDIT */
 
+const createModel = require('./createModel')
+const readModel = require('./readModel')
 const updateModel = require('./updateModel')
 const deleteModel = require('./deleteModel')
 
-const TableName = process.env.API_1PITCH_TEAMTABLE_NAME
-const team = {
-  updateTeam: updateModel,
-  deleteTeam: deleteModel
-}
-
 exports.handler = async (
-  { fieldName, arguments: { input }, prev },
-  { done, fail }
+  { fieldName, identity, arguments: { input }, prev },
+  { fail }
 ) => {
-  try {
-    if (prev.result.authorized) {
-      await team[fieldName](input, TableName)
-      done(null, input)
-    } else {
-      fail(null, 'Unauthorized')
-    }
-  } catch (error) {
-    fail(null, error)
+  console.log('authorized: ', prev.result.authorized)
+
+  switch (fieldName) {
+    case 'createTeam':
+      const createdTeam = await createModel(
+        input,
+        process.env.API_1PITCH_TEAMTABLE_NAME
+      )
+      await createModel(
+        {
+          teamID: createdTeam.id,
+          userID: identity.sub
+        },
+        process.env.API_1PITCH_TEAMUSERLINKTABLE_NAME
+      )
+      return createdTeam
+    case 'updateTeam':
+      return await updateModel(input, process.env.API_1PITCH_TEAMTABLE_NAME)
+    case 'deleteTeam':
+      const deletedTeam = await deleteModel(
+        input,
+        process.env.API_1PITCH_TEAMTABLE_NAME
+      )
+      const linkedMembers = await readModel(
+        deletedTeam.id,
+        process.env.API_1PITCH_TEAMUSERLINKTABLE_NAME,
+        'teamID',
+        'usersByTeam'
+      )
+      await Promise.all(
+        linkedMembers.map((member) => {
+          return deleteModel(
+            member,
+            process.env.API_1PITCH_TEAMUSERLINKTABLE_NAME
+          )
+        })
+      )
+
+      return deletedTeam
   }
 }

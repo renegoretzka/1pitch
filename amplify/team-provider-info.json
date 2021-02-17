@@ -24,17 +24,9 @@
           "deploymentBucketName": "amplify-1pitch-dev-121703-deployment",
           "s3Key": "amplify-builds/1PitchTeamAuthorizer-70396347446467736874-build.zip"
         },
-        "1PitchUpdateTeam": {
-          "deploymentBucketName": "amplify-1pitch-dev-121703-deployment",
-          "s3Key": "amplify-builds/1PitchUpdateTeam-67775267766950527579-build.zip"
-        },
-        "1PitchDeleteTeam": {
-          "deploymentBucketName": "amplify-1pitch-dev-121703-deployment",
-          "s3Key": "amplify-builds/1PitchDeleteTeam-4d586d45367872446a64-build.zip"
-        },
         "1PitchTeam": {
           "deploymentBucketName": "amplify-1pitch-dev-121703-deployment",
-          "s3Key": "amplify-builds/1PitchTeam-656b4a4e75516371736a-build.zip"
+          "s3Key": "amplify-builds/1PitchTeam-4e6a72792b624a4c4c67-build.zip"
         }
       }
     }

@@ -21,7 +21,7 @@ type User
 }
 
 type TeamUserLink
-  @model(queries: null)
+  @model(queries: null, mutations: null, subscriptions: null)
   @key(name: "usersByTeam", fields: ["teamID"])
   @key(name: "teamsByUser", fields: ["userID"]) {
   id: ID!
@@ -136,6 +136,7 @@ type S3Object {
 }
 
 type Mutation {
+  createTeam(input: CreateTeamInput!): Team @function(name: "1PitchTeam-${env}")
   updateTeam(input: UpdateTeamInput!): Team
     @function(name: "1PitchTeamAuthorizer-${env}")
     @function(name: "1PitchTeam-${env}")
@@ -149,11 +150,16 @@ input S3ObjectInput {
   region: String!
   key: String!
 }
+input CreateTeamInput {
+  id: ID
+  name: String!
+  logo: S3ObjectInput
+}
 input UpdateTeamInput {
   id: ID!
   name: String
   logo: S3ObjectInput
 }
 input DeleteTeamInput {
-  id: ID
+  id: ID!
 }

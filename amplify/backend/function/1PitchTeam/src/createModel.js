@@ -1,19 +1,19 @@
 const aws = require('aws-sdk')
 const ddb = new aws.DynamoDB.DocumentClient()
+const { v4: uuid } = require('uuid')
 
-const deleteModel = async (model, table) => {
+const createModel = async (model, table) => {
+  model.id = uuid()
   const params = {
     TableName: table,
-    Key: {
-      id: model.id
-    }
+    Item: model
   }
   try {
-    await ddb.delete(params).promise()
-    return { id: model.id }
+    await ddb.put(params).promise()
+    return model
   } catch (error) {
     console.log('DynamoDB Error: ', error)
     return null
   }
 }
-module.exports = deleteModel
+module.exports = createModel

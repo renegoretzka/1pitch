@@ -10,7 +10,7 @@ const updateModel = async (model, table) => {
     UpdateExpression: '',
     ExpressionAttributeNames: {},
     ExpressionAttributeValues: {},
-    ReturnValues: 'UPDATED_NEW'
+    ReturnValues: 'ALL_NEW'
   }
   let prefix = 'set '
   const attributes = Object.keys(model)
@@ -25,9 +25,13 @@ const updateModel = async (model, table) => {
       prefix = ', '
     }
   }
-
-  await ddb.update(params).promise()
-  return model
+  try {
+    const updatedItem = await ddb.update(params).promise()
+    return { ...updatedItem.Attributes }
+  } catch (error) {
+    console.log('DynamoDB error: ', error)
+    return null
+  }
 }
 
 module.exports = updateModel
