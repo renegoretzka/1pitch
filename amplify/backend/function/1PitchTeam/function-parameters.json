@@ -12,6 +12,36 @@
         "read",
         "update",
         "delete"
+      ],
+      "Startup:@model(appsync)": [
+        "create",
+        "read",
+        "update",
+        "delete"
+      ],
+      "Investor:@model(appsync)": [
+        "create",
+        "read",
+        "update",
+        "delete"
+      ],
+      "Industry:@model(appsync)": [
+        "create",
+        "read",
+        "update",
+        "delete"
+      ],
+      "IndustryStartupLink:@model(appsync)": [
+        "create",
+        "read",
+        "update",
+        "delete"
+      ],
+      "IndustryInvestorLink:@model(appsync)": [
+        "create",
+        "read",
+        "update",
+        "delete"
       ]
     }
   },

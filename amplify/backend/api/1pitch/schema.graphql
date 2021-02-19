@@ -21,15 +21,22 @@ type User
 }
 
 type TeamUserLink
-  @model(queries: null, mutations: null, subscriptions: null)
+  @model(mutations: null, subscriptions: null)
   @key(name: "usersByTeam", fields: ["teamID"])
   @key(name: "teamsByUser", fields: ["userID"])
-  @auth(rules: [{ allow: owner, ownerField: "userID" }]) {
+  @auth(
+    rules: [
+      { allow: private, operations: [read] }
+      { allow: public, operations: [read], provider: iam }
+    ]
+  ) {
   id: ID!
   userID: ID!
   user: User @connection(fields: ["userID"])
   teamID: ID!
   team: Team @connection(fields: ["teamID"])
+  role: String
+  admin: Boolean
 }
 
 type Team
@@ -42,8 +49,10 @@ type Team
   ) {
   id: ID!
   members: [TeamUserLink] @connection(keyName: "usersByTeam", fields: ["id"])
-  startup: Startup @connection
-  investor: Investor @connection
+  startupID: ID
+  startup: Startup @connection(fields: ["startupID"])
+  investorID: ID
+  investor: Investor @connection(fields: ["investorID"])
 }
 
 type Startup
@@ -63,7 +72,9 @@ type Startup
     @connection(keyName: "industriesByStartup", fields: ["id"])
   stage: [StageEnum]
   capitalDemand: Int
-  team: Team! @connection
+  teamID: ID
+  members: [TeamUserLink]
+    @connection(keyName: "usersByTeam", fields: ["teamID"])
   createdAt: AWSDateTime
 }
 
@@ -84,8 +95,10 @@ type Investor
   stage: [StageEnum]
   capitalInvestMin: Int
   capitalInvestMax: Int
-  team: Team! @connection
-  bookmarks: [Startup] @connection
+  teamID: ID
+  members: [TeamUserLink]
+    @connection(keyName: "usersByTeam", fields: ["teamID"])
+  bookmarks: [Startup]
   channels: [Channel] @connection
   createdAt: AWSDateTime
 }
@@ -160,10 +173,6 @@ type S3Object {
 }
 
 type Mutation {
-  updateTeam(input: UpdateTeamInput!): Team
-    @function(name: "1PitchTeamAuthorizer-${env}")
-    @function(name: "1PitchTeam-${env}")
-
   createStartup(input: CreateStartupInput!): Startup
     @function(name: "1PitchTeam-${env}")
   updateStartup(input: UpdateStartupInput!): Startup
@@ -171,11 +180,32 @@ type Mutation {
   deleteStartup(input: DeleteStartupInput!): Startup
     @function(name: "1PitchTeam-${env}")
 
+  createIndustryStartupLink(
+    input: CreateIndustryStartupLinkInput!
+  ): IndustryStartupLink @function(name: "1PitchTeam-${env}")
+  deleteIndustryStartupLink(
+    input: DeleteIndustryStartupLinkInput!
+  ): IndustryStartupLink @function(name: "1PitchTeam-${env}")
+
   createInvestor(input: CreateInvestorInput!): Investor
     @function(name: "1PitchTeam-${env}")
   updateInvestor(input: UpdateInvestorInput!): Investor
     @function(name: "1PitchTeam-${env}")
   deleteInvestor(input: DeleteInvestorInput!): Investor
+    @function(name: "1PitchTeam-${env}")
+
+  createIndustryInvestorLink(
+    input: CreateIndustryInvestorLinkInput!
+  ): IndustryInvestorLink @function(name: "1PitchTeam-${env}")
+  deleteIndustryInvestorLink(
+    input: DeleteIndustryInvestorLinkInput!
+  ): IndustryInvestorLink @function(name: "1PitchTeam-${env}")
+
+  createTeamUserLink(input: CreateTeamUserLinkInput!): TeamUserLink
+    @function(name: "1PitchTeam-${env}")
+  updateTeamUserLink(input: UpdateTeamUserLinkInput!): TeamUserLink
+    @function(name: "1PitchTeam-${env}")
+  deleteTeamUserLInk(input: DeleteTeamUserLinkInput!): TeamUserLink
     @function(name: "1PitchTeam-${env}")
 }
 
@@ -185,24 +215,13 @@ input S3ObjectInput {
   key: String!
 }
 
-input UpdateTeamInput {
-  id: ID!
-  name: String
-  logo: S3ObjectInput
-}
-
 input CreateStartupInput {
-  id: ID
   name: String!
   logo: S3ObjectInput
   summary: String
-  pitch: S3ObjectInput
+  industries: [String]
   stage: [StageEnum]
   capitalDemand: Int
-  createdAt: AWSDateTime
-  startupTeamId: ID!
-  investorBookmarksId: ID
-  industryStartupsId: ID
 }
 input UpdateStartupInput {
   id: ID!
@@ -212,39 +231,60 @@ input UpdateStartupInput {
   pitch: S3ObjectInput
   stage: [StageEnum]
   capitalDemand: Int
-  createdAt: AWSDateTime
-  startupTeamId: ID
-  investorBookmarksId: ID
-  industryStartupsId: ID
 }
 input DeleteStartupInput {
   id: ID!
 }
+input CreateIndustryStartupLinkInput {
+  industryID: ID!
+  startupID: ID!
+}
+input DeleteIndustryStartupLinkInput {
+  industryID: ID!
+  startupID: ID!
+}
 
 input CreateInvestorInput {
-  id: ID
-  name: String
+  name: String!
   logo: S3ObjectInput
   summary: String
   stage: [StageEnum]
   capitalInvestMin: Int
   capitalInvestMax: Int
-  createdAt: AWSDateTime
-  investorTeamId: ID!
-  industryInvestorsId: ID
 }
 input UpdateInvestorInput {
   id: ID!
   name: String
   logo: S3ObjectInput
   summary: String
+  industries: [String]
   stage: [StageEnum]
   capitalInvestMin: Int
   capitalInvestMax: Int
-  createdAt: AWSDateTime
-  investorTeamId: ID
-  industryInvestorsId: ID
 }
 input DeleteInvestorInput {
+  id: ID!
+}
+input CreateIndustryInvestorLinkInput {
+  industryID: ID!
+  investorID: ID!
+}
+input DeleteIndustryInvestorLinkInput {
+  industryID: ID!
+  investorID: ID!
+}
+
+input CreateTeamUserLinkInput {
+  userID: ID!
+  teamID: ID!
+  role: String
+  admin: Boolean
+}
+input UpdateTeamUserLinkInput {
+  id: ID!
+  role: String
+  admin: Boolean
+}
+input DeleteTeamUserLinkInput {
   id: ID!
 }

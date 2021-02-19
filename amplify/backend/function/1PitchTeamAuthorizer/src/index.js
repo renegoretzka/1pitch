@@ -10,6 +10,7 @@ const aws = require('aws-sdk')
 const ddb = new aws.DynamoDB()
 exports.handler = async (event) => {
   try {
+    console.log(event)
     const params = {
       ExpressionAttributeValues: {
         ':teamId': {

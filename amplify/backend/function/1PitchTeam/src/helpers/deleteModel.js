@@ -6,11 +6,13 @@ const deleteModel = async (model, table) => {
     TableName: table,
     Key: {
       id: model.id
-    }
+    },
+    Exists: true,
+    ReturnValues: 'ALL_OLD'
   }
   try {
-    await ddb.delete(params).promise()
-    return { id: model.id }
+    const deletedItem = await ddb.delete(params).promise()
+    return deletedItem.Attributes
   } catch (error) {
     console.log('DynamoDB Error: ', error)
     return null
