@@ -1,4 +1,6 @@
 /* Amplify Params - DO NOT EDIT
+	API_1PITCH_CHANNELTABLE_ARN
+	API_1PITCH_CHANNELTABLE_NAME
 	API_1PITCH_GRAPHQLAPIIDOUTPUT
 	API_1PITCH_INDUSTRYINVESTORLINKTABLE_ARN
 	API_1PITCH_INDUSTRYINVESTORLINKTABLE_NAME
@@ -8,6 +10,8 @@
 	API_1PITCH_INDUSTRYTABLE_NAME
 	API_1PITCH_INVESTORTABLE_ARN
 	API_1PITCH_INVESTORTABLE_NAME
+	API_1PITCH_MESSAGETABLE_ARN
+	API_1PITCH_MESSAGETABLE_NAME
 	API_1PITCH_STARTUPTABLE_ARN
 	API_1PITCH_STARTUPTABLE_NAME
 	API_1PITCH_TEAMTABLE_ARN
@@ -37,6 +41,8 @@ const authorizerStartup = require('./authorization/authorizerStartup')
 const authorizerInvestor = require('./authorization/authorizerInvestor')
 const authorizerTeam = require('./authorization/authorizerTeam')
 const authorizerTeamLink = require('./authorization/authorizerTeamLink')
+const createChannel = require('./functions/createChannel')
+const createMessage = require('./functions/createMessage')
 
 exports.handler = async (event, _, callback) => {
   const {
@@ -87,5 +93,12 @@ exports.handler = async (event, _, callback) => {
     case 'deleteTeamUserLink':
       if (!(await authorizerTeamLink(input.id, identity, callback))) break
       else deleteTeamUserLink(input)
+
+    case 'createChannel':
+      // authorize user of startup or investor team
+      return createChannel(input)
+    case 'createMessage':
+      // authorize user of startup or investor team
+      return createMessage(input, identity)
   }
 }

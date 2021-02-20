@@ -75,6 +75,7 @@ type Startup
   teamID: ID
   members: [TeamUserLink]
     @connection(keyName: "usersByTeam", fields: ["teamID"])
+  channels: [Channel] @connection(keyName: "channelsByStartup", fields: ["id"])
   createdAt: AWSDateTime
 }
 
@@ -99,22 +100,41 @@ type Investor
   members: [TeamUserLink]
     @connection(keyName: "usersByTeam", fields: ["teamID"])
   bookmarks: [Startup]
-  channels: [Channel] @connection
+  channels: [Channel] @connection(keyName: "channelsByInvestor", fields: ["id"])
   createdAt: AWSDateTime
 }
 
-type Channel @model {
+type Channel
+  @model(mutations: null)
+  @key(name: "channelsByStartup", fields: ["startupID", "createdAt"])
+  @key(name: "channelsByInvestor", fields: ["investorID", "createdAt"])
+  @auth(rules: [{ allow: owner, ownerField: "users", operations: [read] }]) {
   id: ID!
-  startup: Startup @connection
-  investor: Investor @connection
-  messages: [Message] @connection
+  users: [ID]
+  messages: [Message] @connection(keyName: "messagesByChannel", fields: ["id"])
+  startupID: ID!
+  startup: Startup @connection(fields: ["startupID"])
+  investorID: ID!
+  investor: Investor @connection(fields: ["investorID"])
   createdAt: AWSDateTime
+  updatedAt: AWSDateTime
 }
 
-type Message @model @auth(rules: [{ allow: owner, ownerField: "sender" }]) {
+type Message
+  @model(mutations: { create: null })
+  @key(name: "messagesByChannel", fields: ["channelID", "createdAt"])
+  @auth(
+    rules: [
+      { allow: owner, ownerField: "sender" }
+      { allow: owner, ownerField: "users", operations: [read] }
+    ]
+  ) {
   id: ID!
-  sender: User @connection
-  channel: Channel @connection
+  senderID: ID
+  sender: User @connection(fields: ["senderID"])
+  users: [ID]
+  channelID: ID!
+  channel: Channel @connection(fields: ["channelID"])
   content: String
   createdAt: AWSDateTime
   updatedAt: AWSDateTime
@@ -207,6 +227,11 @@ type Mutation {
     @function(name: "1PitchTeam-${env}")
   deleteTeamUserLink(input: DeleteTeamUserLinkInput!): TeamUserLink
     @function(name: "1PitchTeam-${env}")
+
+  createChannel(input: CreateChannelInput!): Channel
+    @function(name: "1PitchTeam-${env}")
+  createMessage(input: CreateMessageInput!): Message
+    @function(name: "1PitchTeam-${env}")
 }
 
 input S3ObjectInput {
@@ -287,4 +312,18 @@ input UpdateTeamUserLinkInput {
 }
 input DeleteTeamUserLinkInput {
   id: ID!
+}
+
+input CreateChannelInput {
+  startupID: ID!
+  investorID: ID!
+}
+input CreateMessageInput {
+  channelID: ID!
+  content: String!
+}
+
+type Subscription {
+  addChannel: Channel @aws_subscribe(mutations: ["createChannel"])
+  newMessage: Message @aws_subscribe(mutations: ["createMessage"])
 }

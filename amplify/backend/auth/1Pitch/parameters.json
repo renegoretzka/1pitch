@@ -35,7 +35,7 @@
         "email_verified"
     ],
     "userpoolClientLambdaRole": "1Pitch12f5e31f_userpoolclient_lambda_role",
-    "userpoolClientSetAttributes": true,
+    "userpoolClientSetAttributes": false,
     "sharedId": "12f5e31f",
     "resourceName": "1Pitch",
     "authSelections": "identityPoolAndUserPool",
@@ -69,5 +69,6 @@
         "Ref": "AWS::StackId"
     },
     "permissions": [],
-    "dependsOn": []
+    "dependsOn": [],
+    "authProviders": []
 }

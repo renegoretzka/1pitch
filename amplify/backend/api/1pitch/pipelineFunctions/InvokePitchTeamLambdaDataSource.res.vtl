@@ -1,0 +1,6 @@
+## [Start] Handle error or return result. **
+#if($ctx.result.errorType)
+  $util.error($ctx.result.errorMessage, $ctx.result.errorType)
+#end
+$util.toJson($ctx.result)
+## [End] Handle error or return result. **

@@ -25,6 +25,18 @@
         "update",
         "delete"
       ],
+      "Channel:@model(appsync)": [
+        "create",
+        "read",
+        "update",
+        "delete"
+      ],
+      "Message:@model(appsync)": [
+        "create",
+        "read",
+        "update",
+        "delete"
+      ],
       "Industry:@model(appsync)": [
         "create",
         "read",
