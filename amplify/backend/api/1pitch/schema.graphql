@@ -205,7 +205,7 @@ type Mutation {
     @function(name: "1PitchTeam-${env}")
   updateTeamUserLink(input: UpdateTeamUserLinkInput!): TeamUserLink
     @function(name: "1PitchTeam-${env}")
-  deleteTeamUserLInk(input: DeleteTeamUserLinkInput!): TeamUserLink
+  deleteTeamUserLink(input: DeleteTeamUserLinkInput!): TeamUserLink
     @function(name: "1PitchTeam-${env}")
 }
 

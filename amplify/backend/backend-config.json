@@ -66,20 +66,6 @@
         }
       ]
     },
-    "1PitchTeamAuthorizer": {
-      "build": true,
-      "providerPlugin": "awscloudformation",
-      "service": "Lambda",
-      "dependsOn": [
-        {
-          "category": "api",
-          "resourceName": "1pitch",
-          "attributes": [
-            "GraphQLAPIIdOutput"
-          ]
-        }
-      ]
-    },
     "1PitchTeam": {
       "build": true,
       "providerPlugin": "awscloudformation",

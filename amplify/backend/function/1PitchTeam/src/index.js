@@ -31,6 +31,12 @@ const createIndustryInvestorLink = require('./functions/createIndustryInvestorLi
 const deleteIndustryInvestorLink = require('./functions/deleteIndustryInvestorLink')
 
 const createTeamUserLink = require('./functions/createTeamUserLink')
+const deleteTeamUserLink = require('./functions/deleteTeamUserLink')
+
+const authorizerStartup = require('./authorization/authorizerStartup')
+const authorizerInvestor = require('./authorization/authorizerInvestor')
+const authorizerTeam = require('./authorization/authorizerTeam')
+const authorizerTeamLink = require('./authorization/authorizerTeamLink')
 
 exports.handler = async (event, _, callback) => {
   const {
@@ -39,45 +45,47 @@ exports.handler = async (event, _, callback) => {
     arguments: { input }
   } = event
 
-  console.log(event)
-
   switch (fieldName) {
     case 'createStartup':
       return createStartup(input, identity)
     case 'updateStartup':
-      //checkAuthorization(authorized, callback)
-      return updateModel(input, process.env.API_1PITCH_STARTUPTABLE_NAME)
+      if (!(await authorizerStartup(input.id, identity, callback))) break
+      else updateModel(input, process.env.API_1PITCH_STARTUPTABLE_NAME)
     case 'deleteStartup':
-      //checkAuthorization(authorized, callback)
-      return deleteStartup(input)
+      if (!(await authorizerStartup(input.id, identity, callback))) break
+      else deleteStartup(input)
     case 'createIndustryStartupLink':
-      return createIndustryStartupLink(input)
+      if (!(await authorizerStartup(input.startupID, identity, callback))) break
+      else createIndustryStartupLink(input)
     case 'deleteIndustryStartupLink':
-      return deleteIndustryStartupLink(input)
+      if (!(await authorizerStartup(input.startupID, identity, callback))) break
+      else deleteIndustryStartupLink(input)
 
     case 'createInvestor':
       return createInvestor(input, identity)
     case 'updateInvestor':
-      //checkAuthorization(authorized, callback)
-      return updateModel(input, process.env.API_1PITCH_INVESTORTABLE_NAME)
+      if (!(await authorizerInvestor(input.id, identity, callback))) break
+      else updateModel(input, process.env.API_1PITCH_INVESTORTABLE_NAME)
     case 'deleteInvestor':
-      //checkAuthorization(authorized, callback)
-      return deleteInvestor(input)
+      if (!(await authorizerInvestor(input.id, identity, callback))) break
+      else deleteInvestor(input)
     case 'createIndustryInvestorLink':
-      //checkAuthorization(authorized, callback)
-      return createIndustryInvestorLink(input)
+      if (!(await authorizerInvestor(input.investorID, identity, callback)))
+        break
+      else createIndustryInvestorLink(input)
     case 'deleteIndustryInvestorLink':
-      //checkAuthorization(authorized, callback)
-      return deleteIndustryInvestorLink(input)
+      if (!(await authorizerInvestor(input.investorID, identity, callback)))
+        break
+      else deleteIndustryInvestorLink(input)
 
     case 'createTeamUserLink':
-      //checkAuthorization(authorized, callback)
-      return createTeamUserLink(input)
+      if (!(await authorizerTeam(input.teamID, identity, callback))) break
+      else createTeamUserLink(input)
     case 'updateTeamUserLink':
-      //checkAuthorization(authorized, callback)
-      return updateModel(input, process.env.API_1PITCH_TEAMUSERLINKTABLE_NAME)
+      if (!(await authorizerTeamLink(input.id, identity, callback))) break
+      else updateModel(input, process.env.API_1PITCH_TEAMUSERLINKTABLE_NAME)
     case 'deleteTeamUserLink':
-      //checkAuthorization(authorized, callback)
-      return deleteTeamUserLink(input)
+      if (!(await authorizerTeamLink(input.id, identity, callback))) break
+      else deleteTeamUserLink(input)
   }
 }

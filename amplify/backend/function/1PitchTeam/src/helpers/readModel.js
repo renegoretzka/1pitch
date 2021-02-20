@@ -12,7 +12,6 @@ const readModel = async (key, table, keyName = 'id', indexName = undefined) => {
   if (indexName) {
     params.IndexName = indexName
   }
-
   try {
     const { Items } = await ddb.query(params).promise()
     return Items
