@@ -1,12 +1,12 @@
 const aws = require('aws-sdk')
 const ddb = new aws.DynamoDB.DocumentClient()
 
-const updateModel = async (model, table) => {
+const updateModel = async (model, tableName) => {
   let timestamp = new Date()
   model.updatedAt = timestamp.toISOString()
 
   const params = {
-    TableName: table,
+    TableName: tableName,
     Key: {
       id: model.id
     },
@@ -28,9 +28,10 @@ const updateModel = async (model, table) => {
       prefix = ', '
     }
   }
+  console.log(params)
   try {
-    const updatedItem = await ddb.update(params).promise()
-    return { ...updatedItem.Attributes }
+    const { Attributes } = await ddb.update(params).promise()
+    return Attributes
   } catch (error) {
     console.log('DynamoDB error: ', error)
     return null

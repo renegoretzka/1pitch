@@ -1,6 +1,9 @@
 {
   "permissions": {
     "storage": {
+      "User:@model(appsync)": [
+        "read"
+      ],
       "TeamUserLink:@model(appsync)": [
         "create",
         "read",
@@ -14,6 +17,12 @@
         "delete"
       ],
       "Startup:@model(appsync)": [
+        "create",
+        "read",
+        "update",
+        "delete"
+      ],
+      "Bookmark:@model(appsync)": [
         "create",
         "read",
         "update",

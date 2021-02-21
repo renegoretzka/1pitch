@@ -37,6 +37,34 @@ const deleteInvestor = async (input) => {
       )
     })
   )
+
+  const GetLinkedChannels = async (investor) => {
+    return await readModel(
+      investor.id,
+      process.env.API_1PITCH_CHANNELTABLE_NAME,
+      'investorID',
+      'channelsByInvestor'
+    )
+  }
+  const GetLinkedMessages = async (channel) => {
+    return await readModel(
+      channel.id,
+      process.env.API_1PITCH_MESSAGETABLE_NAME,
+      'channelID',
+      'messagesByChannel'
+    )
+  }
+  const linkedChannels = await GetLinkedChannels(deletedInvestor)
+  let linkedMessages = []
+
+  for (let channel of linkedChannels) {
+    await deleteModel(channel, process.env.API_1PITCH_CHANNELTABLE_NAME)
+    linkedMessages = [...linkedMessages, ...(await GetLinkedMessages(channel))]
+  }
+  for (let message of linkedMessages) {
+    await deleteModel(message, process.env.API_1PITCH_MESSAGETABLE_NAME)
+  }
+
   return deletedInvestor
 }
 

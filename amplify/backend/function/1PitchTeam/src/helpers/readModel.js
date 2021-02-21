@@ -1,9 +1,14 @@
 const aws = require('aws-sdk')
 const ddb = new aws.DynamoDB.DocumentClient()
 
-const readModel = async (key, table, keyName = 'id', indexName = undefined) => {
+const readModel = async (
+  key,
+  tableName,
+  keyName = 'id',
+  indexName = undefined
+) => {
   let params = {
-    TableName: table,
+    TableName: tableName,
     KeyConditionExpression: `${keyName} = :key`,
     ExpressionAttributeValues: {
       ':key': key

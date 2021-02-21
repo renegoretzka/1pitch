@@ -9,8 +9,8 @@ type User
     ]
   ) {
   id: ID!
-  email: AWSEmail
-  phone: AWSPhone
+  email: AWSEmail @auth(rules: [{ allow: owner, ownerField: "id" }])
+  phone: AWSPhone @auth(rules: [{ allow: owner, ownerField: "id" }])
   firstname: String
   lastname: String
   avatar: S3Object
@@ -70,13 +70,29 @@ type Startup
   pitch: S3Object
   industries: [IndustryStartupLink]
     @connection(keyName: "industriesByStartup", fields: ["id"])
-  stage: [StageEnum]
+  stage: StageEnum
   capitalDemand: Int
   teamID: ID
   members: [TeamUserLink]
     @connection(keyName: "usersByTeam", fields: ["teamID"])
   channels: [Channel] @connection(keyName: "channelsByStartup", fields: ["id"])
   createdAt: AWSDateTime
+}
+
+type Bookmark
+  @model(mutations: null)
+  @key(name: "bookmarksByInvestor", fields: ["investorID"]) {
+  id: ID!
+  investorID: ID
+  investor: Investor @connection(fields: ["investorID"])
+  startupID: ID
+  startup: Startup @connection(fields: ["startupID"])
+  type: BookmarkEnum
+}
+enum BookmarkEnum {
+  SAVED
+  HIDDEN
+  CONTACTED
 }
 
 type Investor
@@ -93,13 +109,14 @@ type Investor
   summary: String
   industries: [IndustryInvestorLink]
     @connection(keyName: "industriesByInvestor", fields: ["id"])
-  stage: [StageEnum]
+  stages: [StageEnum]
   capitalInvestMin: Int
   capitalInvestMax: Int
   teamID: ID
   members: [TeamUserLink]
     @connection(keyName: "usersByTeam", fields: ["teamID"])
-  bookmarks: [Startup]
+  bookmarks: [Bookmark]
+    @connection(keyName: "bookmarksByInvestor", fields: ["id"])
   channels: [Channel] @connection(keyName: "channelsByInvestor", fields: ["id"])
   createdAt: AWSDateTime
 }
@@ -192,7 +209,20 @@ type S3Object {
   key: String!
 }
 
+type Query {
+  me: User @function(name: "1PitchTeam-${env}")
+  getNextStartup(input: GetNextStartupInput!): Startup
+    @function(name: "1PitchTeam-${env}")
+}
+
 type Mutation {
+  createBookmark(input: CreateBookmarkInput!): Bookmark
+    @function(name: "1PitchTeam-${env}")
+  updateBookmark(input: UpdateBookmarkInput!): Bookmark
+    @function(name: "1PitchTeam-${env}")
+  deleteBookmark(input: DeleteBookmarkInput!): Bookmark
+    @function(name: "1PitchTeam-${env}")
+
   createStartup(input: CreateStartupInput!): Startup
     @function(name: "1PitchTeam-${env}")
   updateStartup(input: UpdateStartupInput!): Startup
@@ -240,12 +270,28 @@ input S3ObjectInput {
   key: String!
 }
 
+input GetNextStartupInput {
+  investorID: ID!
+}
+
+input CreateBookmarkInput {
+  startupID: ID!
+  investorID: ID!
+  type: BookmarkEnum!
+}
+input UpdateBookmarkInput {
+  id: ID!
+  type: BookmarkEnum!
+}
+input DeleteBookmarkInput {
+  id: ID!
+}
+
 input CreateStartupInput {
   name: String!
   logo: S3ObjectInput
   summary: String
-  industries: [String]
-  stage: [StageEnum]
+  stage: StageEnum
   capitalDemand: Int
 }
 input UpdateStartupInput {
@@ -254,7 +300,7 @@ input UpdateStartupInput {
   logo: S3ObjectInput
   summary: String
   pitch: S3ObjectInput
-  stage: [StageEnum]
+  stage: StageEnum
   capitalDemand: Int
 }
 input DeleteStartupInput {
@@ -282,7 +328,6 @@ input UpdateInvestorInput {
   name: String
   logo: S3ObjectInput
   summary: String
-  industries: [String]
   stage: [StageEnum]
   capitalInvestMin: Int
   capitalInvestMax: Int

@@ -1,9 +1,9 @@
 const aws = require('aws-sdk')
 const ddb = new aws.DynamoDB.DocumentClient()
 
-const deleteModel = async (model, table) => {
+const deleteModel = async (model, tableName) => {
   const params = {
-    TableName: table,
+    TableName: tableName,
     Key: {
       id: model.id
     },
@@ -11,8 +11,8 @@ const deleteModel = async (model, table) => {
     ReturnValues: 'ALL_OLD'
   }
   try {
-    const deletedItem = await ddb.delete(params).promise()
-    return deletedItem.Attributes
+    const { Attributes } = await ddb.delete(params).promise()
+    return Attributes
   } catch (error) {
     console.log('DynamoDB Error: ', error)
     return null

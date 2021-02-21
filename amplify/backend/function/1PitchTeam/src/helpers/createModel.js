@@ -16,6 +16,7 @@ const createModel = async (model, tableName, typeName) => {
     TableName: tableName,
     Item: model
   }
+  console.log('handled params in createModel', params)
   try {
     await ddb.put(params).promise()
     return model

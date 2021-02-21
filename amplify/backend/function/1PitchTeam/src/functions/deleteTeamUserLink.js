@@ -3,18 +3,17 @@ const deleteModel = require('../helpers/deleteModel')
 const updateModel = require('../helpers/updateModel')
 
 const deleteTeamUserLink = async (input) => {
-  const deletedLink = await readModel(
-    input.id, //change back to input
+  const deletedLink = await deleteModel(
+    input,
     process.env.API_1PITCH_TEAMUSERLINKTABLE_NAME
   )
 
   const team = await readModel(
-    deletedLink[0].teamID,
+    deletedLink.teamID,
     process.env.API_1PITCH_TEAMTABLE_NAME
   )
 
   const GetLinkedChannels = async (team) => {
-    // is working
     if (team.startupID) {
       return await readModel(
         team.startupID,
@@ -31,27 +30,29 @@ const deleteTeamUserLink = async (input) => {
       )
     }
   }
-  const linkedChannels = await GetLinkedChannels(team[0])
-  console.log(linkedChannels)
-  /*
-  linkedChannels.map(async (channel) => {
-    console.log({ channel })
-    const channelInfo = await readModel(
+  const GetLinkedMessages = async (channel) => {
+    return await readModel(
       channel.id,
-      process.env.API_1PITCH_CHANNELTABLE_NAME
+      process.env.API_1PITCH_MESSAGETABLE_NAME,
+      'channelID',
+      'messagesByChannel'
     )
-    console.log({ channelInfo })
-    const i = channelInfo[0].users.findIndex(user === deletedLink.userID)
-    const newUserList = channelInfo[0].users.splice(i, 1)
-    await updateModel(
-      {
-        ...channelInfo[0],
-        users: newUserList
-      },
-      process.env.API_1PITCH_CHANNELTABLE_NAME
-    )
-  })
-  */
+  }
+  const linkedChannels = await GetLinkedChannels(team[0])
+  let linkedMessages = []
+
+  for (let channel of linkedChannels) {
+    const i = channel.users.findIndex((user) => user === deletedLink.userID)
+    channel.users.splice(i, 1)
+    await updateModel(channel, process.env.API_1PITCH_CHANNELTABLE_NAME)
+    linkedMessages = [...linkedMessages, ...(await GetLinkedMessages(channel))]
+  }
+  for (let message of linkedMessages) {
+    const i = message.users.findIndex((user) => user === deletedLink.userID)
+    message.users.splice(i, 1)
+    await updateModel(message, process.env.API_1PITCH_MESSAGETABLE_NAME)
+  }
+
   return deletedLink
 }
 
