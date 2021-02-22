@@ -57,6 +57,10 @@ type Team
 
 type Startup
   @model(mutations: null, subscriptions: null)
+  @key(
+    name: "startupsLookingForFunding"
+    fields: ["lookingForFunding", "createdAt"]
+  )
   @auth(
     rules: [
       { allow: private, operations: [read] }
@@ -68,6 +72,8 @@ type Startup
   logo: S3Object
   summary: String
   pitch: S3Object
+  lookingForFunding: LookingForFundingEnum
+  industriesID: [ID]
   industries: [IndustryStartupLink]
     @connection(keyName: "industriesByStartup", fields: ["id"])
   stage: StageEnum
@@ -77,6 +83,11 @@ type Startup
     @connection(keyName: "usersByTeam", fields: ["teamID"])
   channels: [Channel] @connection(keyName: "channelsByStartup", fields: ["id"])
   createdAt: AWSDateTime
+}
+enum LookingForFundingEnum {
+  YES
+  NO
+  FUNDED
 }
 
 type Bookmark
@@ -107,6 +118,7 @@ type Investor
   name: String
   logo: S3Object
   summary: String
+  industriesID: [ID]
   industries: [IndustryInvestorLink]
     @connection(keyName: "industriesByInvestor", fields: ["id"])
   stages: [StageEnum]
@@ -293,6 +305,7 @@ input CreateStartupInput {
   summary: String
   stage: StageEnum
   capitalDemand: Int
+  lookingForFunding: LookingForFundingEnum
 }
 input UpdateStartupInput {
   id: ID!
@@ -302,6 +315,7 @@ input UpdateStartupInput {
   pitch: S3ObjectInput
   stage: StageEnum
   capitalDemand: Int
+  lookingForFunding: LookingForFundingEnum
 }
 input DeleteStartupInput {
   id: ID!

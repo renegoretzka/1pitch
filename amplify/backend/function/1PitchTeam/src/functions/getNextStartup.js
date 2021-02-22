@@ -14,27 +14,69 @@ const getNextStartup = async (investorID) => {
     'investorID',
     'bookmarksByInvestor'
   )
-  let bookmarkFilter = []
-  bookmarks.map((bookmark) => {
-    bookmarkFilter = [...bookmarkFilter, bookmark.startupID]
-  })
+  let FilterExpression = ''
+  let ExpressionAttributeValues = {}
+
+  FilterExpression += 'attribute_exists(pitch) '
+
+  let bookmarkFilterExpression = ''
+  let i = 1
+  for (let bookmark of bookmarks) {
+    const expression = `:bookmark${i++}`
+    bookmarkFilterExpression += `${expression}${
+      i <= bookmarks.length ? ', ' : ''
+    }`
+    ExpressionAttributeValues[expression] = bookmark.startupID
+  }
+  if (bookmarks.length > 0) {
+    FilterExpression += `and NOT (id IN (${bookmarkFilterExpression})) `
+  }
+
+  let stageFilterExpression = ''
+  i = 1
+  for (let stage of investor[0].stages) {
+    const expression = `:stage${i++}`
+    stageFilterExpression += `${expression}${
+      i <= investor[0].stages.length ? ', ' : ''
+    }`
+    ExpressionAttributeValues[expression] = stage
+  }
+  if (investor[0].stages.length > 0) {
+    FilterExpression += `and stage IN (${stageFilterExpression}) `
+  }
+
+  let industryFilterExpression = ''
+  i = 1
+  for (let industryID of investor[0].industriesID) {
+    const expression = `:industry${i++}`
+    industryFilterExpression += `contains(industriesID, ${expression})${
+      i <= investor[0].industriesID.length ? ' or ' : ''
+    }`
+    ExpressionAttributeValues[expression] = industryID
+  }
+  if (investor[0].industriesID.length > 0) {
+    FilterExpression += `and (${industryFilterExpression}) `
+  }
+
+  ExpressionAttributeValues[':investMin'] = investor[0].capitalInvestMin
+  FilterExpression += 'and capitalDemand >= :investMin '
+
+  ExpressionAttributeValues[':investMax'] = investor[0].capitalInvestMax
+  FilterExpression += 'and capitalDemand <= :investMax '
+
+  ExpressionAttributeValues[':lookingForFunding'] = 'YES'
 
   const params = {
     TableName: process.env.API_1PITCH_STARTUPTABLE_NAME,
-    FilterExpression: 'attribute_exists(pitch) and stage IN (:stages)',
-    ExpressionAttributeValues: {
-      ':stages': investor[0].stages.toString()
-    },
-    /*
- and NOT (id IN (:bookmarks))
-       ':bookmarks': bookmarkFilter.join()
-    */
-
-    Limit: 10
+    IndexName: 'startupsLookingForFunding',
+    KeyConditionExpression: 'lookingForFunding = :lookingForFunding',
+    FilterExpression: FilterExpression,
+    ExpressionAttributeValues: ExpressionAttributeValues,
+    Limit: 1
   }
-  console.log(params)
-  const result = await ddb.scan(params).promise()
-  console.log(result)
+
+  const result = await ddb.query(params).promise()
+  return result.Items[0]
 }
 
 module.exports = getNextStartup
