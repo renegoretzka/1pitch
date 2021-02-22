@@ -1,6 +1,6 @@
 projects:
   1pitch:
-    schemaPath: graphql/schema.json
+    schemaPath: amplify/backend/api/1pitch/build/schema.graphql
     includes:
       - src/graphql/**/*.js
     excludes:
@@ -9,7 +9,9 @@ projects:
       amplify:
         codeGenTarget: javascript
         generatedFileName: ''
-        docsFilePath: 'C:/Projekte/1Pitch/graphql'
+        docsFilePath: graphql
+        region: eu-central-1
+        apiId: null
         maxDepth: 2
 extensions:
   amplify:

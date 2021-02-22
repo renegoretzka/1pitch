@@ -23,7 +23,7 @@
         },
         "1PitchTeam": {
           "deploymentBucketName": "amplify-1pitch-dev-153412-deployment",
-          "s3Key": "amplify-builds/1PitchTeam-51714278596444427753-build.zip"
+          "s3Key": "amplify-builds/1PitchTeam-537972715a4250523830-build.zip"
         }
       }
     }

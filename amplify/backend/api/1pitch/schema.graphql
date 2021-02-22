@@ -9,7 +9,7 @@ type User
     ]
   ) {
   id: ID!
-  email: AWSEmail @auth(rules: [{ allow: owner, ownerField: "id" }])
+  email: AWSEmail
   phone: AWSPhone @auth(rules: [{ allow: owner, ownerField: "id" }])
   firstname: String
   lastname: String
@@ -225,6 +225,7 @@ type Query {
   me: User @function(name: "1PitchTeam-${env}")
   getNextStartup(input: GetNextStartupInput!): Startup
     @function(name: "1PitchTeam-${env}")
+  getUserByEmail(email: AWSEmail!): User @aws_iam
 }
 
 type Mutation {

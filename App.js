@@ -1,21 +1,38 @@
-import { StatusBar } from 'expo-status-bar'
+import 'react-native-gesture-handler'
 import React from 'react'
-import { StyleSheet, Text, View } from 'react-native'
 
-export default function App() {
+import Amplify from 'aws-amplify'
+import config from './aws-exports'
+import { useKeepAwake } from 'expo-keep-awake'
+
+import { UserProvider } from './app/context/User'
+import { NotificationsProvider } from './app/context/Notifications'
+import { ModalsProvider } from './app/context/Modals'
+
+import RootStack from './app/screens/stacks/RootStack'
+
+Amplify.configure({
+  ...config,
+  Auth: {
+    mandatorySignIn: false
+  },
+  Analytics: {
+    disabled: true
+  }
+})
+
+const App = () => {
+  useKeepAwake()
+
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <UserProvider>
+      <NotificationsProvider>
+        <ModalsProvider>
+          <RootStack />
+        </ModalsProvider>
+      </NotificationsProvider>
+    </UserProvider>
   )
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center'
-  }
-})
+export default App
