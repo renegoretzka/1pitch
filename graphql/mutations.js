@@ -448,6 +448,7 @@ export const createTeamUserLink = /* GraphQL */ `
         email
         firstname
         lastname
+        location
         bio
         linkedIn
         createdAt
@@ -479,6 +480,7 @@ export const updateTeamUserLink = /* GraphQL */ `
         email
         firstname
         lastname
+        location
         bio
         linkedIn
         createdAt
@@ -510,6 +512,7 @@ export const deleteTeamUserLink = /* GraphQL */ `
         email
         firstname
         lastname
+        location
         bio
         linkedIn
         createdAt
@@ -580,6 +583,7 @@ export const createMessage = /* GraphQL */ `
         email
         firstname
         lastname
+        location
         bio
         linkedIn
         createdAt
@@ -607,6 +611,7 @@ export const createUser = /* GraphQL */ `
       email
       firstname
       lastname
+      location
       avatar {
         bucket
         region
@@ -633,6 +638,7 @@ export const updateUser = /* GraphQL */ `
       email
       firstname
       lastname
+      location
       avatar {
         bucket
         region
@@ -659,6 +665,7 @@ export const deleteUser = /* GraphQL */ `
       email
       firstname
       lastname
+      location
       avatar {
         bucket
         region

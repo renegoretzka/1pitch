@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from 'react'
 import {
   TouchableHighlight,
   StyleSheet,
@@ -6,87 +6,87 @@ import {
   View,
   Image,
   ScrollView,
-  Pressable,
-} from "react-native";
+  Pressable
+} from 'react-native'
 
-import { useUser } from "../../context/User";
-import { useNotification } from "../../context/Notifications";
-import { useModals } from "../../context/Modals";
+import { useUser } from '../../context/User'
+import { useNotification } from '../../context/Notifications'
+import { useModals } from '../../context/Modals'
 
-import Modal from "../../context/Modals/Modal";
-import ForgotPasswordModal from "./ForgotPasswordModal";
+import Modal from '../../context/Modals/Modal'
+import ForgotPasswordModal from './ForgotPasswordModal'
 
-import TextInputWrapper from "../ui/TextInputWrapper";
-import SubmitButton from "../ui/SubmitButton";
-import Divider from "../ui/Divider";
+import TextInputWrapper from '../ui/TextInputWrapper'
+import SubmitButton from '../ui/SubmitButton'
+import Divider from '../ui/Divider'
 
-import { color } from "../../styles/colors";
-import { Ionicons } from "@expo/vector-icons";
-import { textLink, textNormal } from "../../styles/containers";
+import { color } from '../../styles/colors'
+import { Ionicons } from '@expo/vector-icons'
+import { textLink, textNormal } from '../../styles/containers'
 
 const LoginModal = ({ userData, navigation }) => {
-  const { login, logout, forgotPassword } = useUser();
-  const { pushNotification } = useNotification();
-  const { modalIsShown, showModal, hideAllModals } = useModals();
+  const { login, logout, forgotPassword } = useUser()
+  const { pushNotification } = useNotification()
+  const { modalIsShown, showModal, hideAllModals } = useModals()
 
-  const [password, setPassword] = useState("");
-  const [errorMessage, setErrorMessage] = useState("");
+  const [password, setPassword] = useState('')
+  const [errorMessage, setErrorMessage] = useState('')
 
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(false)
 
   useEffect(() => {
-    if (modalIsShown("Login")) {
-      setErrorMessage("");
-      setPassword("");
+    if (modalIsShown('Login')) {
+      setErrorMessage('')
+      setPassword('')
     }
-  }, [modalIsShown("Login")]);
+  }, [modalIsShown('Login')])
 
   const handleSignInSubmit = async () => {
-    setLoading(true);
+    setLoading(true)
     try {
       const user = await login({
         username: userData.email,
-        password: password,
-      });
+        password: password
+      })
 
       if (user.attributes) {
-        hideAllModals();
+        hideAllModals()
       }
     } catch (error) {
-      if (error.message === "AUTHORIZATION_ERROR") {
-        setErrorMessage("Your entered password is invalid.");
+      if (error.message === 'AUTHORIZATION_ERROR') {
+        setErrorMessage('Your entered password is invalid.')
       } else {
-        console.log("Error from handleSignInSubmit", error);
+        console.log('Error from handleSignInSubmit', error)
       }
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  };
+  }
 
   const ResetPasswordIcon = () => (
     <Ionicons name="ios-send" size={30} color="white" />
-  );
+  )
 
   const handleResetPassword = async () => {
     try {
       const forgotPasswordSuccess = await forgotPassword({
-        username: userData.email,
-      });
+        username: userData.email
+      })
       if (forgotPasswordSuccess) {
         pushNotification({
           text: `A confirmation code has been send to ${userData.email} to set a new password.`,
-          icon: ResetPasswordIcon,
-        });
-        showModal("ForgotPassword");
+          icon: ResetPasswordIcon
+        })
+        showModal('ForgotPassword')
       }
     } catch (error) {
-      if (error.message === "LIMIT_EXCEEDED") {
-        setErrorMessage("Attempt limit exceeded, please try after some time.");
+      if (error.message === 'LIMIT_EXCEEDED') {
+        setErrorMessage('Attempt limit exceeded, please try after some time.')
       } else {
-        console.log("Error from handleResetPassword", error);
+        console.log('Error from handleResetPassword', error)
       }
     }
-  };
+  }
 
   return (
     <>
@@ -103,7 +103,7 @@ const LoginModal = ({ userData, navigation }) => {
           <View style={styles.userInfo}>
             <Image
               style={styles.userInfoAvatar}
-              source={require("../../assets/profilbild.jpg")}
+              source={require('../../assets/profilbild.jpg')}
             />
             <Text style={styles.userInfoText}>{userData.firstname}</Text>
             <Text style={styles.userInfoText}>{userData.email}</Text>
@@ -127,7 +127,7 @@ const LoginModal = ({ userData, navigation }) => {
             </Pressable>
             <SubmitButton
               onPress={() => {
-                handleSignInSubmit();
+                handleSignInSubmit()
               }}
               value="Continue"
               loading={loading}
@@ -152,74 +152,74 @@ const LoginModal = ({ userData, navigation }) => {
       </Modal>
       <ForgotPasswordModal email={userData.email} navigation={navigation} />
     </>
-  );
-};
+  )
+}
 
 const styles = StyleSheet.create({
   content: {
-    marginTop: 10,
+    marginTop: 10
   },
   row: {
     flex: 1,
-    flexDirection: "row",
-    flexWrap: "wrap",
-    justifyContent: "center",
-    marginTop: 10,
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'center',
+    marginTop: 10
   },
   userInfo: {
-    alignItems: "center",
+    alignItems: 'center'
   },
   userInfoAvatar: {
     width: 120,
     height: 120,
-    resizeMode: "cover",
+    resizeMode: 'cover',
     borderRadius: 60,
-    marginBottom: 10,
+    marginBottom: 10
   },
   userInfoText: {
     color: color.white,
     fontSize: 18,
-    fontWeight: "bold",
-    textAlign: "center",
+    fontWeight: 'bold',
+    textAlign: 'center'
   },
   text: {
     color: color.white,
     fontSize: 18,
     marginBottom: 30,
-    textAlign: "center",
+    textAlign: 'center'
   },
   form: {
-    marginBottom: 20,
+    marginBottom: 20
   },
   textInput: {
-    marginTop: 20,
+    marginTop: 20
   },
   socialLogins: {
-    marginTop: 20,
+    marginTop: 20
   },
   socialButton: {
     height: 50,
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
     borderRadius: 10,
     borderWidth: 1,
     borderColor: color.white,
-    marginBottom: 20,
+    marginBottom: 20
   },
   socialButtonIcon: {
     width: 40,
     paddingLeft: 10,
     fontSize: 30,
-    color: color.white,
+    color: color.white
   },
   socialButtonText: {
     flex: 1,
     paddingRight: 40,
-    textAlign: "center",
+    textAlign: 'center',
     color: color.white,
     fontSize: 20,
-    fontWeight: "500",
-  },
-});
+    fontWeight: '500'
+  }
+})
 
-export default LoginModal;
+export default LoginModal

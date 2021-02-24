@@ -38,7 +38,6 @@ const Register = ({ navigation, route }) => {
 
   const [firstname, setFirstname] = useState('')
   const [lastname, setLastname] = useState('')
-  const [showBirthdayPicker, setShowBirthdayPicker] = useState(false)
   const [email, setEmail] = useState(route.params?.email)
   const [emailEditable] = useState(route.params?.email ? false : true)
   const [password, setPassword] = useState('')
@@ -52,7 +51,6 @@ const Register = ({ navigation, route }) => {
   const handleSignUp = async () => {
     try {
       setLoading(true)
-      const AWSbirthdate = format(birthdate, 'MM/dd/yyyy')
       await register({
         username: email,
         password: password,
@@ -106,7 +104,7 @@ const Register = ({ navigation, route }) => {
             autoCapitalize="words"
             secureTextEntry={false}
             textContentType="givenName"
-            style={styles.inputSpacing}
+            style={[styles.inputSpacingSmall, { marginTop: 20 }]}
           />
           <TextInputWrapper
             state={lastname}
@@ -117,7 +115,7 @@ const Register = ({ navigation, route }) => {
             autoCapitalize="words"
             secureTextEntry={false}
             textContentType="familyName"
-            style={styles.inputSpacingSmall}
+            style={styles.inputSpacing}
           />
           <TextInputWrapper
             state={email}
@@ -128,9 +126,9 @@ const Register = ({ navigation, route }) => {
             autoCapitalize="none"
             secureTextEntry={false}
             editable={emailEditable}
-            style={styles.inputSpacingSmall}
+            style={styles.inputSpacing}
           />
-          <Text style={[textInfo, styles.inputSpacing]}>
+          <Text style={[textInfo, styles.inputSpacingSmall]}>
             We will send you an confirmation email to verify your email address.
           </Text>
           <TextInputWrapper
@@ -142,12 +140,12 @@ const Register = ({ navigation, route }) => {
             autoCapitalize="none"
             secureTextEntry={true}
             textContentType="familyName"
-            style={styles.inputSpacing}
+            style={styles.inputSpacingSmall}
           />
           <View style={styles.flexRow}>
             <Text style={textNormal}>
               When pressing "Accept and continue", you are accepting the terms
-              of REPLAY:
+              of 1PITCH:
             </Text>
             <Text style={textLink}>Terms of use</Text>
             <Text style={textNormal}>, </Text>
@@ -181,10 +179,10 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap'
   },
   inputSpacing: {
-    marginBottom: SPACING_BETWEEN
+    marginBottom: SPACING_BETWEEN + 15
   },
   inputSpacingSmall: {
-    marginBottom: SPACING_BETWEEN_SMALL
+    marginBottom: SPACING_BETWEEN
   },
   datePickerContainer: {
     marginTop: SPACING_BETWEEN,

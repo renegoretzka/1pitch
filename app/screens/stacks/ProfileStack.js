@@ -1,15 +1,15 @@
-import React from "react";
-import { createStackNavigator } from "@react-navigation/stack";
+import React from 'react'
+import { createStackNavigator } from '@react-navigation/stack'
 
-import Profile from "../navigation/Profile";
-import Register from "../navigation/Profile/Register";
-import UpdateProfile from "../navigation/Profile/UpdateProfile";
-import UpdateAvatar from "../navigation/Profile/UpdateAvatar";
+import Profile from '../navigation/Profile'
+import Register from '../navigation/Profile/Register'
+import UpdateProfile from '../navigation/Profile/UpdateProfile'
+import UpdateAvatar from '../navigation/Profile/UpdateAvatar'
 
-import { color } from "../../styles/colors";
-import { FONT_WEIGHT_BOLD } from "../../styles/variables";
+import { color } from '../../styles/colors'
+import { FONT_WEIGHT_BOLD } from '../../styles/variables'
 
-const Stack = createStackNavigator();
+const Stack = createStackNavigator()
 
 const ProfileStack = () => {
   return (
@@ -19,42 +19,41 @@ const ProfileStack = () => {
         component={Profile}
         options={{ headerShown: false }}
       />
-      <Stack.Screen name="Register" component={Register} />
       <Stack.Screen
         name="UpdateProfile"
         component={UpdateProfile}
         options={{
-          title: "Update profile",
+          title: 'Change your profile'
         }}
       />
       <Stack.Screen
         name="UpdateAvatar"
         component={UpdateAvatar}
         options={{
-          title: "Take selfie or upload photo",
+          title: 'Take selfie or upload photo'
         }}
       />
     </Stack.Navigator>
-  );
-};
+  )
+}
 
 const headerOptions = {
   headerStyle: {
     backgroundColor: color.background,
-    shadowColor: "#000",
+    shadowColor: '#000',
     shadowOffset: {
       width: 0,
-      height: 3,
+      height: 3
     },
     shadowOpacity: 0.27,
     shadowRadius: 4.65,
-    elevation: 6,
+    elevation: 6
   },
   headerTintColor: color.white,
   headerTitleStyle: {
-    fontWeight: FONT_WEIGHT_BOLD,
+    fontWeight: FONT_WEIGHT_BOLD
   },
-  tabBarVisible: false,
-};
+  tabBarVisible: false
+}
 
-export default ProfileStack;
+export default ProfileStack

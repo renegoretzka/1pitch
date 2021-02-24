@@ -41,25 +41,29 @@ const SignIn = ({ navigation }) => {
               barStyle="light-content"
               backgroundColor={color.background}
             />
-            <ScrollView
-              style={[scrollContainer, styles.scrollview]}
-              contentInset={{ bottom: 85 }}
-            >
-              <Logo />
-              <Text style={textNormal}>The 1-Minute Pitch for Startups</Text>
-              <Text style={[styles.header, textHeader]}>Welcome to 1Pitch</Text>
-              <SubmitButton onPress={() => showModal('Sign')} value="Sign in" />
-              <View style={styles.register}>
-                <Text style={textNormal}>You have not account yet? </Text>
-                <Pressable
-                  onPress={() => {
-                    showModal('Sign')
-                  }}
-                >
-                  <Text style={textLink}>Sign up</Text>
-                </Pressable>
+            <View style={[styles.container, scrollContainer]}>
+              <View style={styles.headerContainer}>
+                <Logo />
+                <Text style={textNormal}>The 1-Minute Pitch for Startups</Text>
+                <Text style={[styles.header]}>Welcome to 1Pitch</Text>
               </View>
-            </ScrollView>
+              <View style={styles.signContainer}>
+                <SubmitButton
+                  onPress={() => showModal('Sign')}
+                  value="Sign in"
+                />
+                <View style={styles.register}>
+                  <Text style={textNormal}>You have not account yet? </Text>
+                  <Pressable
+                    onPress={() => {
+                      showModal('Sign')
+                    }}
+                  >
+                    <Text style={textLink}>Sign up</Text>
+                  </Pressable>
+                </View>
+              </View>
+            </View>
           </SafeAreaView>
           <SignModal navigation={navigation} hideNavigation={true} />
         </>
@@ -69,22 +73,27 @@ const SignIn = ({ navigation }) => {
 }
 
 const styles = StyleSheet.create({
-  scrollview: {
-    marginTop: 10
+  container: {
+    flex: 1,
+    justifyContent: 'space-between',
+    backgroundColor: color.background,
+    paddingBottom: 60
+  },
+  headerContainer: {
+    flex: 1,
+    justifyContent: 'center'
   },
   header: {
-    marginBottom: 15
+    color: color.white,
+    fontSize: 42,
+    marginTop: 30
+  },
+  signContainer: {
+    flex: 0.3
   },
   register: {
     flexDirection: 'row',
     marginTop: 20
-  },
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: color.background,
-    paddingBottom: 60
   },
   loading: {
     marginTop: 40,

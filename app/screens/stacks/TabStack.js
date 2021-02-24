@@ -5,32 +5,29 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import Home from '../navigation/Home'
 import Chat from '../navigation/Chat'
 
-import { useUser } from '../../context/User'
-
 import { color } from '../../styles/colors'
 import { FontAwesome } from '@expo/vector-icons'
 import { FontAwesome5 } from '@expo/vector-icons'
 import { Ionicons } from '@expo/vector-icons'
 import { Platform } from 'react-native'
 import ProfileStack from './ProfileStack'
+import TeamStack from './TeamStack'
 
 const Tab = createBottomTabNavigator()
 
 const TabStack = ({ route }) => {
   return (
     <Tab.Navigator
-      initialRouteName="Profile"
+      initialRouteName="Teams"
       screenOptions={({ route }) => ({
         tabBarIcon: ({ color, size }) => {
           if (route.name === 'Home') {
             return <FontAwesome name="home" size={size} color={color} />
-          } else if (route.name === 'Chat') {
-            return <Ionicons name="md-chatboxes" size={size} color={color} />
           } else if (route.name === 'Chats') {
-            return <Ionicons name="md-chatboxes" size={size} color={color} />
+            return <Ionicons name="ios-chatboxes" size={size} color={color} />
+          } else if (route.name === 'Teams') {
+            return <FontAwesome name="group" size={size} color={color} />
           } else if (route.name === 'Profile') {
-            return <FontAwesome5 name="user-circle" size={size} color={color} />
-          } else if (route.name === 'SignIn') {
             return <FontAwesome5 name="user-circle" size={size} color={color} />
           }
         }
@@ -39,13 +36,8 @@ const TabStack = ({ route }) => {
     >
       <Tab.Screen name="Home" component={Home} />
       <Tab.Screen name="Chats" component={Chat} options={{ tabBarBadge: 3 }} />
-      <Tab.Screen
-        name="Profile"
-        component={ProfileStack}
-        options={{
-          title: 'Profile'
-        }}
-      />
+      <Tab.Screen name="Teams" component={TeamStack} />
+      <Tab.Screen name="Profile" component={ProfileStack} />
     </Tab.Navigator>
   )
 }

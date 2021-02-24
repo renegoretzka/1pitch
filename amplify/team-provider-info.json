@@ -19,7 +19,7 @@
       "function": {
         "processUserRegistration": {
           "deploymentBucketName": "amplify-1pitch-dev-153412-deployment",
-          "s3Key": "amplify-builds/processUserRegistration-70476b32474866563079-build.zip"
+          "s3Key": "amplify-builds/processUserRegistration-3831725350616b4a3844-build.zip"
         },
         "1PitchTeam": {
           "deploymentBucketName": "amplify-1pitch-dev-153412-deployment",

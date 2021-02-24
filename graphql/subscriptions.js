@@ -55,6 +55,7 @@ export const newMessage = /* GraphQL */ `
         email
         firstname
         lastname
+        location
         bio
         linkedIn
         createdAt
@@ -68,6 +69,30 @@ export const newMessage = /* GraphQL */ `
         investorID
         createdAt
         updatedAt
+      }
+    }
+  }
+`;
+export const updatedUser = /* GraphQL */ `
+  subscription UpdatedUser($id: ID!) {
+    updatedUser(id: $id) {
+      id
+      email
+      firstname
+      lastname
+      location
+      avatar {
+        bucket
+        region
+        key
+      }
+      bio
+      linkedIn
+      createdAt
+      updatedAt
+      phone
+      teams {
+        nextToken
       }
     }
   }

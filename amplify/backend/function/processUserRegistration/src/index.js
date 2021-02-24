@@ -7,38 +7,40 @@
 	REGION
 Amplify Params - DO NOT EDIT */
 
-const aws = require("aws-sdk");
-const ddb = new aws.DynamoDB();
+const aws = require('aws-sdk')
+const ddb = new aws.DynamoDB()
 
 exports.handler = async (event, context) => {
-  let date = new Date().toISOString();
+  let date = new Date().toISOString()
 
   if (event.request.userAttributes.sub) {
     let params = {
       Item: {
         id: { S: event.request.userAttributes.sub },
         email: { S: event.request.userAttributes.email },
+        firstname: { S: event.request.userAttributes.given_name },
+        lastname: { S: event.request.userAttributes.family_name },
         createdAt: { S: date },
-        updatedAt: { S: date },
+        updatedAt: { S: date }
       },
-      TableName: process.env.API_1PITCH_USERTABLE_NAME,
-    };
+      TableName: process.env.API_1PITCH_USERTABLE_NAME
+    }
     try {
-      await ddb.putItem(params).promise();
+      await ddb.putItem(params).promise()
       console.log(
-        "Successfully created new User from processUserSignUp Lambda function."
-      );
+        'Successfully created new User from processUserSignUp Lambda function.'
+      )
     } catch (error) {
-      console.log("Error from processUserSignUp Lambda function: ", error);
+      console.log('Error from processUserSignUp Lambda function: ', error)
     }
     console.log(
-      "processUserSignUp Lambda function: Everything executed correctly."
-    );
-    context.done(null, event);
+      'processUserSignUp Lambda function: Everything executed correctly.'
+    )
+    context.done(null, event)
   } else {
     console.log(
-      "processUserSignUp Lambda function: Nothing was written to DynamoDB"
-    );
-    context.done(null, event);
+      'processUserSignUp Lambda function: Nothing was written to DynamoDB'
+    )
+    context.done(null, event)
   }
-};
+}

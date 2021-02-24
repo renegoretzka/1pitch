@@ -1,7 +1,7 @@
-import React from "react";
-import { StyleSheet, Text, TextInput } from "react-native";
-import { color } from "../../styles/colors";
-import { inputError, textInput } from "../../styles/containers";
+import React from 'react'
+import { StyleSheet, Text, TextInput } from 'react-native'
+import { color } from '../../styles/colors'
+import { inputError, textInput } from '../../styles/containers'
 
 // TODO: Close button when entering the input field
 
@@ -19,20 +19,20 @@ const TextInputWrapper = ({
   textContentType,
   multiline,
   numberOfLines,
-  style,
+  style
 }) => {
   return (
     <>
       <TextInput
         value={state}
         onChangeText={(text) => {
-          setState(text);
+          setState(text)
         }}
         onFocus={
           setErrorMessage
             ? () => {
-                setErrorMessage("");
-                setState("");
+                setErrorMessage('')
+                setState('')
               }
             : null
         }
@@ -53,14 +53,14 @@ const TextInputWrapper = ({
           textInput,
           style,
           {
-            color: editable === false ? color.lightWhite : color.white,
-            paddingTop: multiline ? 10 : 0,
-          },
+            color: editable === false ? color.placeholder : color.accent,
+            paddingTop: multiline ? 10 : 0
+          }
         ]}
       />
       {errorMessage ? <Text style={inputError}>{errorMessage}</Text> : null}
     </>
-  );
-};
+  )
+}
 
-export default TextInputWrapper;
+export default TextInputWrapper

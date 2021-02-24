@@ -80,5 +80,11 @@
         }
       ]
     }
+  },
+  "storage": {
+    "1pitchStorage": {
+      "service": "S3",
+      "providerPlugin": "awscloudformation"
+    }
   }
 }

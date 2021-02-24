@@ -23,19 +23,18 @@
     "userpoolClientGenerateSecret": false,
     "userpoolClientRefreshTokenValidity": 30,
     "userpoolClientWriteAttributes": [
-        "gender",
-        "name",
-        "phone_number",
+        "family_name",
+        "given_name",
         "email"
     ],
     "userpoolClientReadAttributes": [
         "email",
-        "gender",
-        "name",
+        "family_name",
+        "given_name",
         "email_verified"
     ],
     "userpoolClientLambdaRole": "1Pitch12f5e31f_userpoolclient_lambda_role",
-    "userpoolClientSetAttributes": false,
+    "userpoolClientSetAttributes": true,
     "sharedId": "12f5e31f",
     "resourceName": "1Pitch",
     "authSelections": "identityPoolAndUserPool",

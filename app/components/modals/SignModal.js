@@ -1,98 +1,100 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from 'react'
 import {
   TouchableHighlight,
   StyleSheet,
   Text,
   View,
-  ScrollView,
-} from "react-native";
+  ScrollView
+} from 'react-native'
 
-import { API } from "aws-amplify";
-import { getUserByEmail } from "../../../graphql/Custom/user.queries";
+import { API } from 'aws-amplify'
+import { getUserByEmail } from '../../../graphql/Custom/user.queries'
 
-import { useUser } from "../../context/User";
-import { useModals } from "../../context/Modals";
+import { useUser } from '../../context/User'
+import { useModals } from '../../context/Modals'
 
-import Modal from "../../context/Modals/Modal";
-import LoginModal from "./LoginModal";
-import UserConfirmationModal from "./UserConfirmationModal";
+import Modal from '../../context/Modals/Modal'
+import LoginModal from './LoginModal'
+import UserConfirmationModal from './UserConfirmationModal'
 
-import TextInputWrapper from "../ui/TextInputWrapper";
-import SubmitButton from "../ui/SubmitButton";
-import Divider from "../ui/Divider";
+import TextInputWrapper from '../ui/TextInputWrapper'
+import SubmitButton from '../ui/SubmitButton'
+import Divider from '../ui/Divider'
 
-import { color } from "../../styles/colors";
-import { Ionicons } from "@expo/vector-icons";
+import { color } from '../../styles/colors'
+import { Ionicons } from '@expo/vector-icons'
 
 const SignModal = ({ navigation }) => {
-  const { userExist } = useUser();
-  const { modalIsShown, showModal, hideAllModals } = useModals();
+  const { userExist } = useUser()
+  const { modalIsShown, showModal, hideAllModals } = useModals()
 
-  const [email, setEmail] = useState("");
-  const [errorMessage, setErrorMessage] = useState("");
-  const [userData, setUserData] = useState({});
+  const [email, setEmail] = useState('')
+  const [errorMessage, setErrorMessage] = useState('')
+  const [userData, setUserData] = useState({})
 
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(false)
 
   useEffect(() => {
-    if (modalIsShown("Sign")) {
-      setErrorMessage("");
-      setEmail("rene@renka.de");
+    if (modalIsShown('Sign')) {
+      setErrorMessage('')
+      setEmail('rene@renka.de')
     }
-  }, [modalIsShown("Sign")]);
+  }, [modalIsShown('Sign')])
 
   const handleUserLoginModal = async () => {
     // TODO: move this to userExists and return with the user object to prevent unneccessary api calls
-    const user = await API.graphql({
-      query: getUserByEmail,
-      variables: {
-        email: email,
-      },
-      authMode: "AWS_IAM",
-    });
-    setUserData(user.data.getUserByEmail);
-    showModal("Login");
-  };
+    try {
+      const user = await API.graphql({
+        query: getUserByEmail,
+        variables: {
+          email: email
+        },
+        authMode: 'AWS_IAM'
+      })
+      setUserData(user.data.getUserByEmail)
+      showModal('Login')
+    } catch (error) {
+      console.log(error)
+    }
+  }
 
   const handleUserConfirmationModal = async () => {
-    showModal("UserConfirmation");
-  };
+    showModal('UserConfirmation')
+  }
 
   const handleEmailSubmit = async () => {
     try {
-      setLoading(true);
-      const userExists = await userExist({ username: email });
+      setLoading(true)
+      const userExists = await userExist({ username: email })
       switch (userExists.code) {
-        case "UserNotFoundException":
-          hideAllModals();
-          navigation.push("Register", { email: email });
-          break;
-        case "AliasExistsException":
-          handleUserLoginModal();
-          break;
-        case "NotAuthorizedException":
-          handleUserLoginModal();
-          break;
-        case "CodeMismatchException":
-          handleUserConfirmationModal();
-          break;
-        case "ExpiredCodeException":
-          handleUserConfirmationModal();
-          break;
-        case "LimitExceededException":
-          setErrorMessage(
-            "Attempt limit exceeded, please try after some time."
-          );
-          break;
+        case 'UserNotFoundException':
+          hideAllModals()
+          navigation.push('Register', { email: email })
+          break
+        case 'AliasExistsException':
+          handleUserLoginModal()
+          break
+        case 'NotAuthorizedException':
+          handleUserLoginModal()
+          break
+        case 'CodeMismatchException':
+          handleUserConfirmationModal()
+          break
+        case 'ExpiredCodeException':
+          handleUserConfirmationModal()
+          break
+        case 'LimitExceededException':
+          setErrorMessage('Attempt limit exceeded, please try after some time.')
+          break
         default:
-          console.log("error from handleEmailSubmit", userExists);
+          console.log('error from handleEmailSubmit', userExists)
       }
-      setLoading(false);
+      setLoading(false)
     } catch (error) {
-      setLoading(false);
-      console.log("HandleEmailSubmit Error: ", error);
+      setLoading(false)
+      console.log('HandleEmailSubmit Error: ', error)
     }
-  };
+  }
 
   return (
     <>
@@ -151,41 +153,41 @@ const SignModal = ({ navigation }) => {
       <LoginModal userData={userData} navigation={navigation} />
       <UserConfirmationModal email={email} navigation={navigation} />
     </>
-  );
-};
+  )
+}
 
 const styles = StyleSheet.create({
   signContainer: {},
   form: {
     marginTop: 20,
-    marginBottom: 20,
+    marginBottom: 20
   },
   socialLogins: {
-    marginTop: 20,
+    marginTop: 20
   },
   socialButton: {
     height: 50,
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
     borderRadius: 10,
     borderWidth: 1,
     borderColor: color.white,
-    marginBottom: 20,
+    marginBottom: 20
   },
   socialButtonIcon: {
     width: 40,
     paddingLeft: 10,
     fontSize: 30,
-    color: color.white,
+    color: color.white
   },
   socialButtonText: {
     flex: 1,
     paddingRight: 40,
-    textAlign: "center",
+    textAlign: 'center',
     color: color.white,
     fontSize: 20,
-    fontWeight: "500",
-  },
-});
+    fontWeight: '500'
+  }
+})
 
-export default SignModal;
+export default SignModal

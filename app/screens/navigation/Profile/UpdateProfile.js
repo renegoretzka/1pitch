@@ -41,11 +41,17 @@ import {
   scrollContainer,
   safeArea,
   textNormal,
-  textInput
+  textNormalBigger,
+  textInput,
+  textInputMulti,
+  userAvatar
 } from '../../../styles/containers'
-import { SPACING_BETWEEN } from '../../../styles/variables'
+import {
+  SPACING_BETWEEN,
+  SPACING_BETWEEN_SMALL
+} from '../../../styles/variables'
 
-import { MaterialIcons } from '@expo/vector-icons'
+import { Feather } from '@expo/vector-icons'
 import { MaterialCommunityIcons } from '@expo/vector-icons'
 import { Ionicons } from '@expo/vector-icons'
 
@@ -175,39 +181,34 @@ const UpdateProfile = ({ navigation, route }) => {
             onPress={() => {
               navigation.push('UpdateAvatar')
             }}
-            style={[styles.row, styles.centerX]}
+            style={[
+              styles.row,
+              styles.centerY,
+              { marginBottom: SPACING_BETWEEN }
+            ]}
           >
-            <Image style={styles.avatar} source={{ uri: formState.avatar }} />
-            <View style={styles.iconContainer}>
-              <MaterialIcons
-                name="edit"
-                size={18}
-                color={color.primary}
-                style={styles.icon}
-              />
-            </View>
+            <Image style={userAvatar} source={{ uri: formState.avatar }} />
+            <Feather
+              name="upload"
+              style={{ fontSize: 28, marginRight: SPACING_BETWEEN_SMALL }}
+              color="white"
+            />
+            <Text style={textNormalBigger}>Upload photo</Text>
           </Pressable>
           <View style={styles.flex}>
-            <Text style={[textNormal, styles.inputDescription]}>
-              Profile description
-            </Text>
             <TextInput
               value={formState.about}
               onChangeText={(value) => handleInputChange('about', value)}
               onFocus={(e) => {
                 handleInputBehindKeyboard(e)
               }}
-              placeholder="Tell something about you"
+              placeholder="Tell a little bit about yourself"
               autoCorrect={true}
               multiline={true}
               numberOfLines={2}
-              style={[textInput, styles.about]}
+              style={[textInput, textInputMulti, styles.about]}
             />
-            <SubCategory
-              text="Personal information"
-              style={styles.subCategory}
-            />
-            <Text style={[textNormal, styles.inputDescription]}>Firstname</Text>
+            <SubCategory text="Your name" style={styles.subCategory} />
             <TextInput
               value={formState.firstname}
               onChangeText={(value) => handleInputChange('firstname', value)}
@@ -222,7 +223,6 @@ const UpdateProfile = ({ navigation, route }) => {
               textContentType="givenName"
               style={[textInput, styles.input]}
             />
-            <Text style={[textNormal, styles.inputDescription]}>Lastname</Text>
             <TextInput
               value={formState.lastname}
               onChangeText={(value) => handleInputChange('lastname', value)}
@@ -313,18 +313,6 @@ const styles = StyleSheet.create({
     height: 80,
     borderRadius: 40
   },
-  iconContainer: {
-    width: 28,
-    height: 28,
-    marginTop: 55,
-    marginLeft: -20,
-    marginRight: 5,
-    marginBottom: 20,
-    borderRadius: 14,
-    backgroundColor: color.background,
-    alignItems: 'center',
-    justifyContent: 'center'
-  },
   about: {
     height: 80
   },
@@ -338,20 +326,6 @@ const styles = StyleSheet.create({
   subCategory: {
     marginLeft: 5,
     marginBottom: 10
-  },
-  datePickerContainer: {
-    flexDirection: 'row',
-    backgroundColor: color.accent,
-    borderRadius: 10,
-    height: 50,
-    alignItems: 'center'
-  },
-  datePicker: {
-    flex: 1,
-    fontSize: 20,
-    paddingLeft: 15,
-    color: color.white,
-    textAlignVertical: 'center'
   },
   dropIcon: {
     padding: 10,

@@ -2,6 +2,7 @@ import React from 'react'
 import { createStackNavigator } from '@react-navigation/stack'
 
 import SignIn from '../navigation/SignIn'
+import Register from '../navigation/Profile/Register'
 
 import { color } from '../../styles/colors'
 import { FONT_WEIGHT_BOLD } from '../../styles/variables'
@@ -16,6 +17,7 @@ const SignInStack = () => {
         component={SignIn}
         options={{ headerShown: false }}
       />
+      <Stack.Screen name="Register" component={Register} />
     </Stack.Navigator>
   )
 }

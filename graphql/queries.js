@@ -8,6 +8,7 @@ export const me = /* GraphQL */ `
       email
       firstname
       lastname
+      location
       avatar {
         bucket
         region
@@ -54,29 +55,6 @@ export const getNextStartup = /* GraphQL */ `
         nextToken
       }
       industries {
-        nextToken
-      }
-    }
-  }
-`;
-export const getUserByEmail = /* GraphQL */ `
-  query GetUserByEmail($email: AWSEmail!) {
-    getUserByEmail(email: $email) {
-      id
-      email
-      firstname
-      lastname
-      avatar {
-        bucket
-        region
-        key
-      }
-      bio
-      linkedIn
-      createdAt
-      updatedAt
-      phone
-      teams {
         nextToken
       }
     }
@@ -144,6 +122,7 @@ export const getUser = /* GraphQL */ `
       email
       firstname
       lastname
+      location
       avatar {
         bucket
         region
@@ -172,6 +151,7 @@ export const listUsers = /* GraphQL */ `
         email
         firstname
         lastname
+        location
         bio
         linkedIn
         createdAt
@@ -197,6 +177,7 @@ export const getTeamUserLink = /* GraphQL */ `
         email
         firstname
         lastname
+        location
         bio
         linkedIn
         createdAt
@@ -476,6 +457,7 @@ export const getMessage = /* GraphQL */ `
         email
         firstname
         lastname
+        location
         bio
         linkedIn
         createdAt
@@ -541,6 +523,30 @@ export const getIndustry = /* GraphQL */ `
         nextToken
       }
       investors {
+        nextToken
+      }
+    }
+  }
+`;
+export const getUserByEmail = /* GraphQL */ `
+  query GetUserByEmail($email: AWSEmail!) {
+    getUserByEmail(email: $email) {
+      id
+      email
+      firstname
+      lastname
+      location
+      avatar {
+        bucket
+        region
+        key
+      }
+      bio
+      linkedIn
+      createdAt
+      updatedAt
+      phone
+      teams {
         nextToken
       }
     }

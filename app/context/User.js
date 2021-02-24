@@ -6,7 +6,6 @@ import React, {
   useState
 } from 'react'
 import { API, Auth, Hub, Storage } from 'aws-amplify'
-
 import {
   forgotPassword,
   forgotPasswordConfirmation,
@@ -18,7 +17,13 @@ import {
   userExists
 } from './User/index'
 import { getUserAuthenticated } from '../../graphql/Custom/user.queries'
-import { onUpdateUserAuthenticated } from '../../graphql/Custom/user.subscriptions'
+import { updatedUserAuthenticated } from '../../graphql/Custom/user.subscriptions'
+import { updatedUser } from '../../graphql/subscriptions'
+import { Image } from 'react-native'
+
+const profilePlaceholderURI = Image.resolveAssetSource(
+  require('../assets/profile_placeholder.png')
+).uri
 
 const UserContext = createContext({})
 
@@ -43,15 +48,16 @@ const UserProvider = ({ children }) => {
         query: getUserAuthenticated,
         variables: { id: id }
       })
-      console.log(result)
-      if (result.data.getUser.avatar.key) {
+      if (result.data.getUser.avatar?.key) {
         const avatarUri = await Storage.get(result.data.getUser.avatar.key)
         result.data.getUser.avatar = avatarUri
+      } else {
+        result.data.getUser.avatar = profilePlaceholderURI
       }
       setUser({ ...result.data.getUser })
       setLoading(false)
     } catch (error) {
-      console.log('Error from getUserFromDatabase', error)
+      console.log('Error from setUserFromDatabase', error)
     }
   }
 
@@ -77,15 +83,16 @@ const UserProvider = ({ children }) => {
     let subscription = null
     if (user.id && !subscription) {
       subscription = API.graphql({
-        query: onUpdateUserAuthenticated,
+        query: updatedUserAuthenticated,
         variables: { id: user.id }
       }).subscribe({
         next: async ({ value }) => {
           let result = value.data.updatedUser
-          console.log(result)
-          if (result.avatar.key) {
+          if (result.avatar?.key) {
             const avatarUri = await Storage.get(result.avatar.key)
             result.avatar = avatarUri
+          } else {
+            result.avatar = profilePlaceholderURI
           }
           setUser({ ...result })
         }

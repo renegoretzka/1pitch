@@ -1,5 +1,5 @@
-export const onUpdateUserAuthenticated = /* GraphQL */ `
-  subscription OnUpdatedUser($id: ID!) {
+export const updatedUserAuthenticated = /* GraphQL */ `
+  subscription UpdatedUser($id: ID!) {
     updatedUser(id: $id) {
       id
       email
@@ -12,30 +12,7 @@ export const onUpdateUserAuthenticated = /* GraphQL */ `
         key
       }
       bio
-      birthday
-      location
-      notifications {
-        id
-        type
-        ad {
-          id
-          type
-          price
-          currency
-          createdAt
-          updatedAt
-        }
-        product {
-          id
-          name
-          mainImage
-          type
-          createdAt
-          updatedAt
-        }
-        createdAt
-        updatedAt
-      }
+      linkedIn
     }
   }
-`;
+`

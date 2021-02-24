@@ -13,6 +13,7 @@ type User
   phone: AWSPhone @auth(rules: [{ allow: owner, ownerField: "id" }])
   firstname: String
   lastname: String
+  location: String
   avatar: S3Object
   bio: String
   linkedIn: String
@@ -225,7 +226,8 @@ type Query {
   me: User @function(name: "1PitchTeam-${env}")
   getNextStartup(input: GetNextStartupInput!): Startup
     @function(name: "1PitchTeam-${env}")
-  getUserByEmail(email: AWSEmail!): User @aws_iam
+  getUserByEmail(email: AWSEmail!): User
+    @auth(rules: [{ allow: public, provider: iam }])
 }
 
 type Mutation {
@@ -334,7 +336,7 @@ input CreateInvestorInput {
   name: String!
   logo: S3ObjectInput
   summary: String
-  stage: [StageEnum]
+  stages: [StageEnum]
   capitalInvestMin: Int
   capitalInvestMax: Int
 }
@@ -386,4 +388,5 @@ input CreateMessageInput {
 type Subscription {
   addChannel: Channel @aws_subscribe(mutations: ["createChannel"])
   newMessage: Message @aws_subscribe(mutations: ["createMessage"])
+  updatedUser(id: ID!): User @aws_subscribe(mutations: ["updateUser"])
 }
