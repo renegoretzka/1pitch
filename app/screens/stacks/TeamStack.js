@@ -15,6 +15,7 @@ import InvestorStage from '../navigation/Team/CreateInvestor/InvestorStage'
 import StartupCapital from '../navigation/Team/CreateStartup/StartupCapital'
 import InvestorCapital from '../navigation/Team/CreateInvestor/InvestorCapital'
 import InvestorInformation from '../navigation/Team/CreateInvestor/InvestorInformation'
+import StartupInformation from '../navigation/Team/CreateStartup/StartupInformation'
 
 const Stack = createStackNavigator()
 
@@ -57,6 +58,13 @@ const TeamStack = () => {
       <Stack.Screen
         name="StartupCapital"
         component={StartupCapital}
+        options={{
+          headerShown: false
+        }}
+      />
+      <Stack.Screen
+        name="StartupInformation"
+        component={StartupInformation}
         options={{
           headerShown: false
         }}

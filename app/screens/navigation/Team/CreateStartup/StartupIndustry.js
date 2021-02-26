@@ -27,6 +27,7 @@ const StartupIndustry = ({ navigation, route }) => {
   }
 
   useEffect(() => {
+    setTeamInfo({ ...teamInfo, industries: [] })
     getIndustries()
   }, [])
 
@@ -90,7 +91,7 @@ const StartupIndustry = ({ navigation, route }) => {
       <SafeAreaView style={safeArea}>
         <ScrollView contentContainerStyle={styles.container}>
           <View style={styles.questionContainer}>
-            <Text style={styles.questionProgress}>Questionnaire 3 of 5</Text>
+            <Text style={styles.questionProgress}>Questionnaire 3 of 6</Text>
             <Text style={styles.question}>
               In which industries is your startup?
             </Text>

@@ -1,11 +1,19 @@
-import { API } from 'aws-amplify'
+import { API, Storage } from 'aws-amplify'
 import React, { useEffect, useState } from 'react'
-import { View, StatusBar, StyleSheet, SafeAreaView, Text } from 'react-native'
-import { FlatList } from 'react-native-gesture-handler'
-import { myTeams } from '../../../graphql/Custom/team.queries'
+import {
+  FlatList,
+  View,
+  StatusBar,
+  StyleSheet,
+  SafeAreaView,
+  Text,
+  Platform
+} from 'react-native'
+
 import SubmitButton from '../../components/ui/SubmitButton'
 
-import { Team, TeamSeperator } from '../../components/ui/Team'
+import { TeamItem, TeamSeperator } from '../../components/ui/TeamItem'
+import { useUser } from '../../context/User'
 
 import { color } from '../../styles/colors'
 import {
@@ -14,39 +22,130 @@ import {
   textHeader,
   textNormal
 } from '../../styles/containers'
+import { SPACING_VIEW } from '../../styles/variables'
 
 const Teams = ({ navigation }) => {
-  const [teams, setTeams] = useState()
+  const { user } = useUser()
+  const [teams, setTeams] = useState([])
 
-  const getMyTeams = async () => {
-    let result = await API.graphql({
-      query: myTeams
-    })
-    setTeams(result.data.me.teams.items)
+  const setTeamImages = async (items) => {
+    try {
+      let newTeams = []
+      for (let item of user.teams.items) {
+        const { team } = item
+        let logoURI
+        let avatarURI
+        let newItem = {}
+        let membersWithAvatar = []
+        if (team.investor) {
+          for (let member of team.investor.members.items) {
+            if (member.user.avatar) {
+              avatarURI = await Storage.get(member.user.avatar.key)
+              membersWithAvatar = [
+                ...membersWithAvatar,
+                { ...member, user: { ...member.user, avatarURI } }
+              ]
+            } else {
+              membersWithAvatar = [...membersWithAvatar, { ...member }]
+            }
+          }
+          if (team.investor?.logo) {
+            logoURI = await Storage.get(team.investor.logo.key)
+            newItem = {
+              ...item,
+              team: {
+                investor: {
+                  ...team.investor,
+                  logoURI,
+                  members: { items: membersWithAvatar }
+                }
+              }
+            }
+          } else {
+            newItem = {
+              ...item,
+              team: {
+                investor: {
+                  ...team.investor,
+                  members: { items: membersWithAvatar }
+                }
+              }
+            }
+          }
+        } else if (team.startup) {
+          for (let member of team.startup.members.items) {
+            if (member.user.avatar) {
+              avatarURI = await Storage.get(member.user.avatar.key)
+              membersWithAvatar = [
+                ...membersWithAvatar,
+                { ...member, user: { ...member.user, avatarURI } }
+              ]
+            } else {
+              membersWithAvatar = [...membersWithAvatar, { ...member }]
+            }
+          }
+          if (team.startup?.logo) {
+            logoURI = await Storage.get(team.startup.logo.key)
+            newItem = {
+              ...item,
+              team: {
+                startup: {
+                  ...team.startup,
+                  logoURI,
+                  members: { items: membersWithAvatar }
+                }
+              }
+            }
+          } else {
+            newItem = {
+              ...item,
+              team: {
+                startup: {
+                  ...team.startup,
+                  members: { items: membersWithAvatar }
+                }
+              }
+            }
+          }
+        }
+        newTeams = [...newTeams, newItem]
+      }
+      return newTeams
+    } catch (error) {
+      console.log(error)
+    }
   }
 
   useEffect(() => {
-    getMyTeams()
-  }, [])
+    setTeamImages(user.teams.items).then((newTeams) => {
+      setTeams(newTeams)
+    })
+  }, [user])
+
+  useEffect(() => {
+    //console.log('new teams', teams)
+  }, [teams])
 
   return (
     <SafeAreaView style={safeArea}>
       <StatusBar barStyle="light-content" backgroundColor={color.background} />
-      <View style={scrollContainer} contentInset={{ bottom: 85 }}>
+      <View style={styles.container} contentInset={{ bottom: 85 }}>
         <View style={styles.header}>
           <Text style={textHeader}>Your teams</Text>
         </View>
-        <View>
-          {teams?.length ? (
+        <View style={{ flex: 1 }}>
+          {teams.length ? (
             <FlatList
               data={teams}
-              renderItem={Team}
-              keyExtractor={(team) => team.id}
+              renderItem={TeamItem}
+              keyExtractor={(item) => item.id}
               ItemSeparatorComponent={TeamSeperator}
             />
           ) : (
             <>
-              <Text style={textNormal}>You dont have any teams yet.</Text>
+              <Text style={[textNormal, { marginTop: 15 }]}>
+                You dont have any teams yet.
+              </Text>
               <SubmitButton
                 onPress={() => navigation.push('CreateTeam')}
                 value="Create your first team"
@@ -64,7 +163,13 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 15
+    marginBottom: 10,
+    paddingLeft: SPACING_VIEW,
+    paddingRight: SPACING_VIEW
+  },
+  container: {
+    flex: 1,
+    marginBottom: 65
   }
 })
 

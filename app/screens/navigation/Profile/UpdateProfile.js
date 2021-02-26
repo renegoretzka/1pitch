@@ -61,7 +61,7 @@ const UpdateProfile = ({ navigation, route }) => {
   const { keyboardPosition, handleInputBehindKeyboard } = useBehindKeyboard()
 
   const avatarPlaceholder = Image.resolveAssetSource(
-    require('../../../assets/profilbild.jpg')
+    require('../../../assets/profile_placeholder.png')
   ).uri
 
   const initialFormState = {
@@ -72,6 +72,7 @@ const UpdateProfile = ({ navigation, route }) => {
     email: user.email,
     phone: user.phone,
     avatar: user.avatar ? user.avatar : avatarPlaceholder,
+    linkedIn: user.linkedIn,
     edited: false
   }
 
@@ -102,6 +103,7 @@ const UpdateProfile = ({ navigation, route }) => {
         location: formState.location,
         email: formState.email,
         phone: formState.phone,
+        linkedIn: formState.linkedIn,
         bio: formState.about
       }
 
@@ -208,7 +210,10 @@ const UpdateProfile = ({ navigation, route }) => {
               numberOfLines={2}
               style={[textInput, textInputMulti, styles.about]}
             />
-            <SubCategory text="Your name" style={styles.subCategory} />
+            <SubCategory
+              text="Personal information"
+              style={styles.subCategory}
+            />
             <TextInput
               value={formState.firstname}
               onChangeText={(value) => handleInputChange('firstname', value)}
@@ -235,6 +240,18 @@ const UpdateProfile = ({ navigation, route }) => {
               autoCapitalize="words"
               secureTextEntry={false}
               textContentType="familyName"
+              style={[textInput, styles.input]}
+            />
+            <Text style={[textNormal, styles.inputDescription]}>LinkedIn</Text>
+            <TextInput
+              value={formState.linkedIn}
+              onChangeText={(value) => handleInputChange('linkedIn', value)}
+              onFocus={(e) => {
+                handleInputBehindKeyboard(e)
+              }}
+              placeholder="LinkedIn Profile URL"
+              autoCorrect={false}
+              secureTextEntry={false}
               style={[textInput, styles.input]}
             />
             <SubCategory

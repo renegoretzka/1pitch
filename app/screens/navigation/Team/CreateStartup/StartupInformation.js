@@ -15,11 +15,6 @@ import * as ImagePicker from 'expo-image-picker'
 import * as ImageManipulator from 'expo-image-manipulator'
 
 import { API, Storage } from 'aws-amplify'
-import {
-  createIndustryInvestorLink,
-  createInvestor,
-  updateInvestor
-} from '../../../../../graphql/mutations'
 import config from '../../../../../aws-exports'
 const {
   aws_user_files_s3_bucket_region: region,
@@ -42,8 +37,13 @@ import {
 
 import { Feather } from '@expo/vector-icons'
 import { AntDesign } from '@expo/vector-icons'
+import {
+  createIndustryStartupLink,
+  createStartup,
+  updateStartup
+} from '../../../../../graphql/mutations'
 
-const InvestorInformation = ({ navigation, route }) => {
+const StartupInformation = ({ navigation, route }) => {
   const [teamInfo, setTeamInfo] = useState(route.params?.teamInfo)
   const { handleInputBehindKeyboard } = useBehindKeyboard()
 
@@ -81,19 +81,18 @@ const InvestorInformation = ({ navigation, route }) => {
       let input = {
         name: team.name,
         summary: team.summary,
-        stages: team.stages,
-        capitalInvestMin: team.capitalInvestMin,
-        capitalInvestMax: team.capitalInvestMax
+        stage: team.stage,
+        capitalDemand: team.capitalDemand
       }
 
-      const investor = await API.graphql({
-        query: createInvestor,
+      const startup = await API.graphql({
+        query: createStartup,
         variables: {
           input
         }
       })
       input = {
-        id: investor.data.createInvestor.id
+        id: startup.data.createStartup.id
       }
 
       if (team.logo) {
@@ -121,7 +120,7 @@ const InvestorInformation = ({ navigation, route }) => {
         }
 
         await API.graphql({
-          query: updateInvestor,
+          query: updateStartup,
           variables: {
             input
           }
@@ -129,11 +128,11 @@ const InvestorInformation = ({ navigation, route }) => {
       }
       if (team.industries) {
         input = {
-          investorID: input.id
+          startupID: input.id
         }
         for (let industryID of team.industries) {
           await API.graphql({
-            query: createIndustryInvestorLink,
+            query: createIndustryStartupLink,
             variables: {
               input: { ...input, industryID }
             }
@@ -190,7 +189,7 @@ const InvestorInformation = ({ navigation, route }) => {
           <View style={styles.questionContainer}>
             <Text style={styles.questionProgress}>Questionnaire 6 of 6</Text>
             <Text style={styles.question}>
-              Additional information about your investments and company
+              Tell everyone more about your startup
             </Text>
             <View style={styles.logoContainer}>
               {teamInfo.logo ? (
@@ -221,7 +220,7 @@ const InvestorInformation = ({ navigation, route }) => {
               onFocus={(e) => {
                 handleInputBehindKeyboard(e)
               }}
-              placeholder="Describe your company here"
+              placeholder="Describe your startup here"
               keyboardAppearance="dark"
               multiline={true}
               style={[textInput, styles.input]}
@@ -332,4 +331,4 @@ const styles = StyleSheet.create({
   }
 })
 
-export default InvestorInformation
+export default StartupInformation

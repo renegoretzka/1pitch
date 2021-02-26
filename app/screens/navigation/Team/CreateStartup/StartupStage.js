@@ -38,7 +38,7 @@ const StartupStage = ({ navigation, route }) => {
       <SafeAreaView style={safeArea}>
         <ScrollView contentContainerStyle={styles.container}>
           <View style={styles.questionContainer}>
-            <Text style={styles.questionProgress}>Questionnaire 4 of 5</Text>
+            <Text style={styles.questionProgress}>Questionnaire 4 of 6</Text>
             <Text style={styles.question}>
               What is the current stage of your startup?
             </Text>

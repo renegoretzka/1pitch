@@ -94,7 +94,7 @@ const UserProvider = ({ children }) => {
           } else {
             result.avatar = profilePlaceholderURI
           }
-          setUser({ ...result })
+          setUser({ ...user, result })
         }
       })
       return () => subscription.unsubscribe()

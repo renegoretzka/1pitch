@@ -38,7 +38,7 @@ const StartupName = ({ navigation, route }) => {
       <SafeAreaView style={safeArea}>
         <ScrollView contentContainerStyle={styles.container}>
           <View style={styles.questionContainer}>
-            <Text style={styles.questionProgress}>Questionnaire 2 of 5</Text>
+            <Text style={styles.questionProgress}>Questionnaire 2 of 6</Text>
             <Text style={styles.question}>Whats the name of your startup?</Text>
             <TextInput
               value={teamInfo.name}

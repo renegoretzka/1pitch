@@ -4,6 +4,7 @@ export const myTeams = /* GraphQL */ `
       teams {
         items {
           team {
+            id
             investor {
               createdAt
               id

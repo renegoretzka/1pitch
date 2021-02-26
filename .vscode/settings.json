@@ -1,6 +1,5 @@
 {
   "files.exclude": {
-    "node_modules": true,
     "amplify\\#current-cloud-backend": true
   }
 }

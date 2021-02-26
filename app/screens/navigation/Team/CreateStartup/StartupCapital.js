@@ -38,7 +38,7 @@ const StartupCapital = ({ navigation, route }) => {
       <SafeAreaView style={safeArea}>
         <ScrollView contentContainerStyle={styles.container}>
           <View style={styles.questionContainer}>
-            <Text style={styles.questionProgress}>Questionnaire 5 of 5</Text>
+            <Text style={styles.questionProgress}>Questionnaire 5 of 6</Text>
             <Text style={styles.question}>
               How much capital you want to raise?
             </Text>
@@ -66,7 +66,9 @@ const StartupCapital = ({ navigation, route }) => {
             </Pressable>
             <View style={styles.buttonsContinueBackSpacing} />
             <Pressable
-              onPress={() => navigation.push('StartupIndustry', { teamInfo })}
+              onPress={() =>
+                navigation.push('StartupInformation', { teamInfo })
+              }
               style={styles.buttonContinue}
             >
               <Text style={styles.buttonContinueText}>Continue</Text>

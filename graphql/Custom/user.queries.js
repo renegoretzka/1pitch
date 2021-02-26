@@ -17,59 +17,110 @@ export const getUserByEmail = /* GraphQL */ `
 export const getUserAuthenticated = /* GraphQL */ `
   query GetUser($id: ID!) {
     getUser(id: $id) {
+      email
+      createdAt
+      bio
       avatar {
         bucket
         key
         region
       }
-      bio
       firstname
-      email
-      createdAt
       id
       lastname
+      linkedIn
+      location
       phone
       teams {
         items {
-          role
+          id
           admin
+          role
           team {
-            startup {
-              capitalDemand
-              name
+            investor {
+              capitalInvestMax
+              capitalInvestMin
+              createdAt
+              id
               industries {
                 items {
                   industry {
+                    id
                     name
                   }
                 }
               }
-              stage
-              summary
-              lookingForFunding
-              id
-              pitch {
+              logo {
                 bucket
                 key
                 region
               }
               members {
                 items {
-                  admin
                   role
+                  admin
                   user {
-                    bio
+                    id
+                    email
+                    firstname
+                    lastname
                     avatar {
                       bucket
                       key
                       region
                     }
-                    firstname
-                    lastname
                     linkedIn
                   }
                 }
               }
+              name
+              stages
+              summary
+            }
+            startup {
+              capitalDemand
+              createdAt
+              id
+              industries {
+                items {
+                  industry {
+                    id
+                    name
+                  }
+                }
+              }
+              logo {
+                bucket
+                key
+                region
+              }
+              lookingForFunding
+              members {
+                items {
+                  role
+                  admin
+                  user {
+                    id
+                    email
+                    firstname
+                    lastname
+                    avatar {
+                      bucket
+                      key
+                      region
+                    }
+                    linkedIn
+                  }
+                }
+              }
+              name
+              pitch {
+                bucket
+                key
+                region
+              }
+              stage
+              summary
             }
           }
         }
