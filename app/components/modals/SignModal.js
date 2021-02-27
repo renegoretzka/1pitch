@@ -7,7 +7,7 @@ import {
   ScrollView
 } from 'react-native'
 
-import { API } from 'aws-amplify'
+import { API, Storage } from 'aws-amplify'
 import { getUserByEmail } from '../../../graphql/Custom/user.queries'
 
 import { useUser } from '../../context/User'
@@ -44,6 +44,7 @@ const SignModal = ({ navigation }) => {
   const handleUserLoginModal = async () => {
     // TODO: move this to userExists and return with the user object to prevent unneccessary api calls
     try {
+      setLoading(true)
       const user = await API.graphql({
         query: getUserByEmail,
         variables: {
@@ -51,14 +52,19 @@ const SignModal = ({ navigation }) => {
         },
         authMode: 'AWS_IAM'
       })
-      setUserData(user.data.getUserByEmail)
+      let avatarURI
+      if (user.data.getUserByEmail.avatar?.key) {
+        avatarURI = await Storage.get(user.data.getUserByEmail.avatar.key)
+      }
+      setUserData({ ...user.data.getUserByEmail, avatarURI })
+      setLoading(false)
       showModal('Login')
     } catch (error) {
       console.log(error)
     }
   }
 
-  const handleUserConfirmationModal = async () => {
+  const handleUserConfirmationModal = () => {
     showModal('UserConfirmation')
   }
 

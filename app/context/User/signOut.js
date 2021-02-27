@@ -1,11 +1,11 @@
-const { Auth } = require("aws-amplify");
+const { Auth } = require('aws-amplify')
 
 const signOut = async () => {
   try {
-    await Auth.signOut();
+    await Auth.signOut()
   } catch (error) {
-    console.log("Error: signOut", error);
+    console.log('Error: signOut', error)
   }
-};
+}
 
-export default signOut;
+export default signOut

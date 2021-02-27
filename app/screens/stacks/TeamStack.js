@@ -3,6 +3,7 @@ import { createStackNavigator } from '@react-navigation/stack'
 
 import Teams from '../navigation/Teams'
 import CreateTeam from '../navigation/Team/CreateTeam'
+import UpdateTeam from '../navigation/Team/UpdateTeam'
 
 import { color } from '../../styles/colors'
 import { FONT_WEIGHT_BOLD } from '../../styles/variables'
@@ -26,6 +27,13 @@ const TeamStack = () => {
         name="Teams"
         component={Teams}
         options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="UpdateTeam"
+        component={UpdateTeam}
+        options={{
+          title: 'Update team'
+        }}
       />
       <Stack.Screen
         name="CreateTeam"

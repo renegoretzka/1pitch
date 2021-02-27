@@ -227,7 +227,7 @@ type Query {
   getNextStartup(input: GetNextStartupInput!): Startup
     @function(name: "1PitchTeam-${env}")
   getUserByEmail(email: AWSEmail!): User
-    @auth(rules: [{ allow: public, provider: iam }])
+    @auth(rules: [{ allow: public, provider: iam }, { allow: private }])
 }
 
 type Mutation {
@@ -345,7 +345,7 @@ input UpdateInvestorInput {
   name: String
   logo: S3ObjectInput
   summary: String
-  stage: [StageEnum]
+  stages: [StageEnum]
   capitalInvestMin: Int
   capitalInvestMax: Int
 }

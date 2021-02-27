@@ -1,25 +1,25 @@
-import React, { createContext, useContext, useState, useMemo } from "react";
+import React, { createContext, useContext, useState, useMemo } from 'react'
 
-const ModalContext = createContext([]);
+const ModalContext = createContext([])
 
 const ModalsProvider = ({ children }) => {
-  const [modals, setModals] = useState({});
+  const [modals, setModals] = useState({})
 
   const modalIsShown = (name) => {
-    return modals[name];
-  };
+    return modals[name]
+  }
 
   const showModal = (name) => {
-    setModals((prev) => ({ ...prev, [name]: true }));
-  };
+    setModals((prev) => ({ ...prev, [name]: true }))
+  }
 
   const hideModal = (name) => {
-    setModals((prev) => ({ ...prev, [name]: false }));
-  };
+    setModals((prev) => ({ ...prev, [name]: false }))
+  }
 
   const hideAllModals = () => {
-    setModals({});
-  };
+    setModals({})
+  }
 
   const values = useMemo(
     () => ({
@@ -27,19 +27,19 @@ const ModalsProvider = ({ children }) => {
       modalIsShown,
       showModal,
       hideModal,
-      hideAllModals,
+      hideAllModals
     }),
     [modals]
-  );
+  )
 
   return (
     <ModalContext.Provider value={values}>{children}</ModalContext.Provider>
-  );
-};
+  )
+}
 
 const useModals = () => {
-  const context = useContext(ModalContext);
-  return context;
-};
+  const context = useContext(ModalContext)
+  return context
+}
 
-export { useModals, ModalsProvider };
+export { useModals, ModalsProvider }

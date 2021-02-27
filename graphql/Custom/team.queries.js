@@ -15,6 +15,7 @@ export const myTeams = /* GraphQL */ `
               capitalInvestMin
               members {
                 items {
+                  id
                   admin
                   role
                   user {

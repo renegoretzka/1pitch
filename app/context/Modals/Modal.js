@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from 'react'
 import {
   Dimensions,
   StyleSheet,
@@ -6,15 +6,16 @@ import {
   View,
   Animated,
   PanResponder,
-  Pressable,
-} from "react-native";
+  Pressable
+} from 'react-native'
 
-import { color } from "../../styles/colors";
-import { Ionicons } from "@expo/vector-icons";
-import { useModals } from "../Modals";
+import { color } from '../../styles/colors'
+import { Ionicons } from '@expo/vector-icons'
+import { useModals } from '../Modals'
+import useBehindKeyboard from '../InputBehindKeyboard'
 
-const TOTAL_HEIGHT = Dimensions.get("window").height;
-const FADE_DURATION = 300;
+const TOTAL_HEIGHT = Dimensions.get('window').height
+const FADE_DURATION = 300
 
 const Modal = ({
   children,
@@ -22,70 +23,70 @@ const Modal = ({
   header,
   spacing,
   navigation,
-  hideNavigation,
+  hideNavigation
 }) => {
-  const opacity = useRef(new Animated.Value(0)).current;
+  const opacity = useRef(new Animated.Value(0)).current
   const position = useRef(new Animated.ValueXY({ x: 0, y: TOTAL_HEIGHT }))
-    .current;
-  const stackNavigator = useRef(navigation.dangerouslyGetParent()).current;
-  const { modalIsShown, hideModal } = useModals();
-  const [active, setActive] = useState(false);
+    .current
+  const stackNavigator = useRef(navigation.dangerouslyGetParent()).current
+  const { modalIsShown, hideModal } = useModals()
+  const [active, setActive] = useState(false)
 
   const handleShowModal = () => {
-    setActive(true);
+    setActive(true)
     if (hideNavigation) {
-      stackNavigator.setOptions({ tabBarVisible: false });
+      stackNavigator.setOptions({ tabBarVisible: false })
     }
     Animated.parallel([
       Animated.timing(opacity, {
         toValue: 0.5,
         duration: FADE_DURATION,
-        useNativeDriver: true,
+        useNativeDriver: true
       }),
       Animated.spring(position, {
         toValue: {
           x: 0,
-          y: spacing,
+          y: spacing
         },
-        useNativeDriver: true,
-      }),
-    ]).start();
-  };
+        useNativeDriver: true
+      })
+    ]).start()
+  }
 
   const handleHideModal = () => {
     Animated.parallel([
       Animated.timing(opacity, {
         toValue: 0,
         duration: FADE_DURATION,
-        useNativeDriver: true,
+        useNativeDriver: true
       }),
       Animated.spring(position, {
         toValue: {
           x: 0,
-          y: TOTAL_HEIGHT,
+          y: TOTAL_HEIGHT
         },
         tension: 4,
-        useNativeDriver: true,
-      }),
-    ]).start();
+        useNativeDriver: true
+      })
+    ]).start()
     setTimeout(() => {
       if (hideNavigation) {
-        stackNavigator.setOptions({ tabBarVisible: true });
+        stackNavigator.setOptions({ tabBarVisible: true })
       }
-      setActive(false);
-      pan.y.setValue(0);
-    }, FADE_DURATION);
-  };
+      setActive(false)
+      pan.y.setValue(0)
+    }, FADE_DURATION)
+  }
 
   useEffect(() => {
     if (modalIsShown(name)) {
-      handleShowModal();
+      handleShowModal()
     } else if (!modalIsShown(name) && active) {
-      handleHideModal();
+      handleHideModal()
     }
-  }, [modalIsShown(name)]);
+  }, [modalIsShown(name)])
 
-  const pan = useRef(new Animated.ValueXY({ x: 0, y: 0 })).current;
+  const pan = useRef(new Animated.ValueXY({ x: 0, y: 0 })).current
 
   const panResponder = PanResponder.create({
     onMoveShouldSetPanResponder: () => true,
@@ -95,21 +96,21 @@ const Modal = ({
           [
             null,
             {
-              dy: pan.y,
-            },
+              dy: pan.y
+            }
           ],
           {
-            useNativeDriver: false,
+            useNativeDriver: false
           }
-        )(e, gestureState);
+        )(e, gestureState)
       }
     },
     onPanResponderRelease: (_, gestureState) => {
       if (gestureState.dy >= 0) {
-        hideModal(name);
+        hideModal(name)
       }
-    },
-  });
+    }
+  })
 
   return (
     <>
@@ -124,16 +125,16 @@ const Modal = ({
               {
                 transform: [
                   { translateY: position.y },
-                  { translateY: Animated.divide(pan.y, 2) },
-                ],
-              },
+                  { translateY: Animated.divide(pan.y, 2) }
+                ]
+              }
             ]}
           >
             <Animated.View style={styles.panView} {...panResponder.panHandlers}>
               <Pressable
                 style={styles.closeButton}
                 onPress={() => {
-                  hideModal(name);
+                  hideModal(name)
                 }}
                 hitSlop={50}
               >
@@ -143,7 +144,7 @@ const Modal = ({
             <View style={[styles.header]}>
               <Pressable
                 onPress={() => {
-                  hideModal(name);
+                  hideModal(name)
                 }}
               >
                 <Ionicons name="ios-close" style={styles.closeIcon} />
@@ -155,61 +156,61 @@ const Modal = ({
         </View>
       )}
     </>
-  );
-};
+  )
+}
 
 const styles = StyleSheet.create({
   container: {
     zIndex: 4,
-    position: "absolute",
-    width: "100%",
-    height: "100%",
+    position: 'absolute',
+    width: '100%',
+    height: '100%'
   },
   backdrop: {
-    position: "absolute",
-    width: "100%",
-    height: "100%",
-    backgroundColor: "#000000",
+    position: 'absolute',
+    width: '100%',
+    height: '100%',
+    backgroundColor: '#000000'
   },
   modal: {
     flex: 1,
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
-    backgroundColor: color.secondary,
+    backgroundColor: color.secondary
   },
   panView: {
-    flexDirection: "row",
+    flexDirection: 'row',
     height: 20,
     paddingBottom: 5,
-    justifyContent: "center",
+    justifyContent: 'center'
   },
   closeButton: {
     flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
+    alignItems: 'center',
+    justifyContent: 'center'
   },
   closeBar: {
     width: 60,
     height: 4,
     borderRadius: 2,
-    backgroundColor: color.lightWhite,
+    backgroundColor: color.lightWhite
   },
   header: {
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
     height: 50,
     paddingBottom: 10,
     borderBottomColor: color.divider,
-    borderBottomWidth: 1,
+    borderBottomWidth: 1
   },
   headerText: {
     flex: 1,
     marginRight: 50,
-    textAlign: "center",
+    textAlign: 'center',
     color: color.white,
     fontSize: 18,
-    fontWeight: "600",
-    letterSpacing: 0.5,
+    fontWeight: '600',
+    letterSpacing: 0.5
   },
   closeIcon: {
     marginLeft: 10,
@@ -218,14 +219,14 @@ const styles = StyleSheet.create({
     height: 40,
     fontSize: 40,
     color: color.white,
-    textAlign: "center",
+    textAlign: 'center'
   },
   content: {
     flex: 1,
     paddingTop: 10,
     marginLeft: 20,
-    marginRight: 20,
-  },
-});
+    marginRight: 20
+  }
+})
 
-export default Modal;
+export default Modal

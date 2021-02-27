@@ -25,7 +25,6 @@ const {
   aws_user_files_s3_bucket_region: region,
   aws_user_files_s3_bucket: bucket
 } = config
-import { nanoid } from 'nanoid'
 
 import useBehindKeyboard from '../../../../context/InputBehindKeyboard'
 

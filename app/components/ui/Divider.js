@@ -1,8 +1,8 @@
-import React from "react";
-import { StyleSheet, Text, View } from "react-native";
+import React from 'react'
+import { StyleSheet, Text, View } from 'react-native'
 
-import { color } from "../../styles/colors";
-import { FONT_SIZE_TEXT, FONT_WEIGHT_BOLD } from "../../styles/variables";
+import { color } from '../../styles/colors'
+import { FONT_SIZE_TEXT, FONT_WEIGHT_BOLD } from '../../styles/variables'
 
 const Divider = ({ text, style }) => {
   return (
@@ -15,26 +15,26 @@ const Divider = ({ text, style }) => {
         </>
       ) : null}
     </View>
-  );
-};
+  )
+}
 
 const styles = StyleSheet.create({
   dividerWithText: {
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center'
   },
   dividerWithTextLine: {
     flex: 1,
     height: 1,
-    backgroundColor: color.divider,
+    backgroundColor: color.divider
   },
   dividerWithTextContent: {
     marginLeft: 15,
     marginRight: 15,
     color: color.lightWhite,
     fontSize: FONT_SIZE_TEXT,
-    fontWeight: FONT_WEIGHT_BOLD,
-  },
-});
+    fontWeight: FONT_WEIGHT_BOLD
+  }
+})
 
-export default Divider;
+export default Divider

@@ -1,14 +1,6 @@
 import React, { useState } from 'react'
-import {
-  Image,
-  Linking,
-  Platform,
-  Pressable,
-  StatusBar,
-  StyleSheet,
-  Text,
-  View
-} from 'react-native'
+import { Image, Linking, Pressable, StyleSheet, Text, View } from 'react-native'
+import { useNavigation } from '@react-navigation/native'
 
 import Divider from './Divider'
 import { color } from '../../styles/colors'
@@ -18,6 +10,7 @@ import { Ionicons } from '@expo/vector-icons'
 import { SPACING_VIEW } from '../../styles/variables'
 
 const TeamItem = ({ item }) => {
+  const navigation = useNavigation()
   const { team } = item
   const avatarPlaceholder = Image.resolveAssetSource(
     require('../../assets/profile_placeholder.png')
@@ -35,7 +28,7 @@ const TeamItem = ({ item }) => {
           <Text style={styles.name}>{investor.name}</Text>
           <Pressable
             style={styles.settings}
-            onPress={() => navigation.push('UpdateTeam', team)}
+            onPress={() => navigation.push('UpdateTeam', { team: team })}
           >
             <Ionicons name="md-settings" size={24} color={color.white} />
           </Pressable>
@@ -167,7 +160,9 @@ const TeamItem = ({ item }) => {
           <Text style={styles.name}>{startup.name}</Text>
           <Pressable
             style={styles.settings}
-            onPress={() => navigation.push('UpdateTeam', team)}
+            onPress={() =>
+              navigation.push('UpdateTeam', { admin: item.admin, team })
+            }
           >
             <Ionicons name="md-settings" size={24} color={color.white} />
           </Pressable>
@@ -195,7 +190,7 @@ const TeamItem = ({ item }) => {
             : 'Please set your capital demand for your startup'}
         </Text>
         <Text style={styles.sub}>Team</Text>
-        <View style={styles.tagContainer}>
+        <View>
           {startup.members.items.map((member) => (
             <View style={styles.member} key={member.user.id}>
               <Image
@@ -282,6 +277,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingVertical: 5,
     marginRight: 10,
+    marginBottom: 10,
     borderRadius: 20,
     backgroundColor: color.primary
   },
@@ -318,7 +314,11 @@ const styles = StyleSheet.create({
   member: {
     flex: 1,
     flexDirection: 'row',
-    alignItems: 'center'
+    alignItems: 'center',
+    paddingBottom: 10,
+    marginTop: 10,
+    borderBottomWidth: 1,
+    borderColor: color.divider
   },
   memberAvatar: {
     height: 62,

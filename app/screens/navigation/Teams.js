@@ -1,4 +1,4 @@
-import { API, Storage } from 'aws-amplify'
+import { API, nav, Storage } from 'aws-amplify'
 import React, { useEffect, useState } from 'react'
 import {
   FlatList,
@@ -7,7 +7,8 @@ import {
   StyleSheet,
   SafeAreaView,
   Text,
-  Platform
+  Platform,
+  Pressable
 } from 'react-native'
 
 import SubmitButton from '../../components/ui/SubmitButton'
@@ -23,6 +24,8 @@ import {
   textNormal
 } from '../../styles/containers'
 import { SPACING_VIEW } from '../../styles/variables'
+
+import { Ionicons } from '@expo/vector-icons'
 
 const Teams = ({ navigation }) => {
   const { user } = useUser()
@@ -117,14 +120,12 @@ const Teams = ({ navigation }) => {
   }
 
   useEffect(() => {
-    setTeamImages(user.teams.items).then((newTeams) => {
-      setTeams(newTeams)
-    })
+    if (user?.teams?.items) {
+      setTeamImages(user?.teams?.items).then((newTeams) => {
+        setTeams(newTeams)
+      })
+    }
   }, [user])
-
-  useEffect(() => {
-    //console.log('new teams', teams)
-  }, [teams])
 
   return (
     <SafeAreaView style={safeArea}>
@@ -132,17 +133,32 @@ const Teams = ({ navigation }) => {
       <View style={styles.container} contentInset={{ bottom: 85 }}>
         <View style={styles.header}>
           <Text style={textHeader}>Your teams</Text>
+          {teams.length ? (
+            <Pressable
+              onPress={() => navigation.push('CreateTeam')}
+              style={styles.addTeam}
+            >
+              <Text style={styles.addTeamText}>Add team</Text>
+              <Ionicons
+                name="ios-add-circle-outline"
+                size={34}
+                color={color.primary}
+              />
+            </Pressable>
+          ) : (
+            <></>
+          )}
         </View>
         <View style={{ flex: 1 }}>
           {teams.length ? (
             <FlatList
               data={teams}
-              renderItem={TeamItem}
+              renderItem={({ item }) => <TeamItem item={item} />}
               keyExtractor={(item) => item.id}
               ItemSeparatorComponent={TeamSeperator}
             />
           ) : (
-            <>
+            <View style={styles.safeContainer}>
               <Text style={[textNormal, { marginTop: 15 }]}>
                 You dont have any teams yet.
               </Text>
@@ -150,7 +166,7 @@ const Teams = ({ navigation }) => {
                 onPress={() => navigation.push('CreateTeam')}
                 value="Create your first team"
               />
-            </>
+            </View>
           )}
         </View>
       </View>
@@ -163,13 +179,28 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+    marginTop: 10,
     marginBottom: 10,
     paddingLeft: SPACING_VIEW,
     paddingRight: SPACING_VIEW
   },
+  addTeam: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    alignItems: 'center'
+  },
+  addTeamText: {
+    color: color.white,
+    fontSize: 18,
+    marginRight: 10
+  },
   container: {
     flex: 1,
     marginBottom: 65
+  },
+  safeContainer: {
+    paddingLeft: SPACING_VIEW,
+    paddingRight: SPACING_VIEW
   }
 })
 

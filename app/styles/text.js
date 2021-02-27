@@ -1,5 +1,5 @@
 export default {
   main: {
-    fontFamily: "",
-  },
-};
+    fontFamily: ''
+  }
+}

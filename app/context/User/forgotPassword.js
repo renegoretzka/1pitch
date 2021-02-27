@@ -1,16 +1,16 @@
-const { Auth } = require("aws-amplify");
+const { Auth } = require('aws-amplify')
 
 const forgotPassword = async ({ username }) => {
   try {
-    await Auth.forgotPassword(username);
-    return true;
+    await Auth.forgotPassword(username)
+    return true
   } catch (error) {
-    if (error.code === "LimitExceededException") {
-      throw new Error("LIMIT_EXCEEDED");
+    if (error.code === 'LimitExceededException') {
+      throw new Error('LIMIT_EXCEEDED')
     } else {
-      console.log("Error from forgotPassword", error);
+      console.log('Error from forgotPassword', error)
     }
   }
-};
+}
 
-export default forgotPassword;
+export default forgotPassword

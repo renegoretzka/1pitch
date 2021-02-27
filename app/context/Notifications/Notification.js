@@ -1,39 +1,39 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef } from 'react'
 import {
   Animated,
   Dimensions,
   PanResponder,
   StyleSheet,
   Text,
-  View,
-} from "react-native";
+  View
+} from 'react-native'
 
-import CircurlarProgressBar from "./CircurlarProgressBar";
+import CircurlarProgressBar from './CircurlarProgressBar'
 
-import { color } from "../../styles/colors";
-import { textNormal } from "../../styles/containers";
+import { color } from '../../styles/colors'
+import { textNormal } from '../../styles/containers'
 
-const DURATION = 7000;
-const FADE_DURATION_IN = 300;
-const FADE_DURATION_OUT = 100;
-const SPACING_TOP = 40;
-const SPACING_BOTTOM = 10;
-const SPACING_INSIDE = 20;
-const SPACING_OUTSIDE = 20;
-const HEIGHT = 60;
-const BG_COLOR = color.secondary;
+const DURATION = 7000
+const FADE_DURATION_IN = 300
+const FADE_DURATION_OUT = 100
+const SPACING_TOP = 40
+const SPACING_BOTTOM = 10
+const SPACING_INSIDE = 20
+const SPACING_OUTSIDE = 20
+const HEIGHT = 60
+const BG_COLOR = color.secondary
 
-const WIDTH = Dimensions.get("window").width - SPACING_OUTSIDE * 2;
+const WIDTH = Dimensions.get('window').width - SPACING_OUTSIDE * 2
 
 const Notification = ({ text, icon, id, index, remove, deletedItems }) => {
-  const [visible, setVisible] = useState(true);
-  const [previousIndex, setPreviousIndex] = useState();
+  const [visible, setVisible] = useState(true)
+  const [previousIndex, setPreviousIndex] = useState()
 
-  const opacity = useRef(new Animated.Value(0)).current;
+  const opacity = useRef(new Animated.Value(0)).current
   const position = useRef(
     new Animated.ValueXY({ x: 0, y: (HEIGHT + SPACING_TOP) * -1 })
-  ).current;
-  const progress = useRef(new Animated.Value(0)).current;
+  ).current
+  const progress = useRef(new Animated.Value(0)).current
 
   useEffect(() => {
     if (
@@ -43,15 +43,15 @@ const Notification = ({ text, icon, id, index, remove, deletedItems }) => {
       Animated.spring(position, {
         toValue: {
           x: 0,
-          y: (HEIGHT + SPACING_BOTTOM) * (index - deletedItems),
+          y: (HEIGHT + SPACING_BOTTOM) * (index - deletedItems)
         },
         tension: 50,
         friction: 6,
-        useNativeDriver: true,
-      }).start();
+        useNativeDriver: true
+      }).start()
     }
-    setPreviousIndex(index);
-  }, [index, deletedItems]);
+    setPreviousIndex(index)
+  }, [index, deletedItems])
 
   useEffect(() => {
     // Fade in animation
@@ -59,29 +59,29 @@ const Notification = ({ text, icon, id, index, remove, deletedItems }) => {
       Animated.timing(opacity, {
         toValue: 1,
         duration: FADE_DURATION_IN,
-        useNativeDriver: true,
+        useNativeDriver: true
       }),
       Animated.spring(position, {
         toValue: {
           x: 0,
-          y: (HEIGHT + SPACING_BOTTOM) * index,
+          y: (HEIGHT + SPACING_BOTTOM) * index
         },
         tension: 80,
         friction: 6,
-        useNativeDriver: true,
-      }),
-    ]).start();
+        useNativeDriver: true
+      })
+    ]).start()
 
     // Animation of the circular progress bar, when it finishes it sets the notification visibility to false
     Animated.timing(progress, {
       toValue: 1,
       duration: DURATION,
-      useNativeDriver: true,
-    }).start();
+      useNativeDriver: true
+    }).start()
     setTimeout(() => {
-      setVisible(false);
-    }, DURATION);
-  }, []);
+      setVisible(false)
+    }, DURATION)
+  }, [])
 
   useEffect(() => {
     if (!visible) {
@@ -89,23 +89,23 @@ const Notification = ({ text, icon, id, index, remove, deletedItems }) => {
         Animated.timing(opacity, {
           toValue: 0,
           duration: FADE_DURATION_OUT,
-          useNativeDriver: true,
+          useNativeDriver: true
         }),
         Animated.spring(position, {
           toValue: {
             x: 0,
-            y: (HEIGHT + SPACING_TOP) * -1,
+            y: (HEIGHT + SPACING_TOP) * -1
           },
           tension: 10,
           friction: 7,
-          useNativeDriver: true,
-        }),
-      ]).start();
-      remove(id);
+          useNativeDriver: true
+        })
+      ]).start()
+      remove(id)
     }
-  }, [visible]);
+  }, [visible])
 
-  const pan = useRef(new Animated.ValueXY({ x: 0, y: 0 })).current;
+  const pan = useRef(new Animated.ValueXY({ x: 0, y: 0 })).current
 
   const panResponder = PanResponder.create({
     onMoveShouldSetPanResponder: () => true,
@@ -114,30 +114,30 @@ const Notification = ({ text, icon, id, index, remove, deletedItems }) => {
         [
           null,
           {
-            dy: pan.y,
-          },
+            dy: pan.y
+          }
         ],
         {
-          useNativeDriver: false,
+          useNativeDriver: false
         }
-      )(e, gestureState);
+      )(e, gestureState)
     },
     onPanResponderRelease: (_, gestureState) => {
       if (gestureState.dy <= 0) {
-        setVisible(false);
+        setVisible(false)
       } else {
         Animated.spring(pan, {
           toValue: {
             x: 0,
-            y: 0,
+            y: 0
           },
           tension: 40,
           friction: 7,
-          useNativeDriver: true,
-        }).start();
+          useNativeDriver: true
+        }).start()
       }
-    },
-  });
+    }
+  })
 
   return (
     <Animated.View
@@ -147,9 +147,9 @@ const Notification = ({ text, icon, id, index, remove, deletedItems }) => {
           opacity: opacity,
           transform: [
             { translateY: position.y },
-            { translateY: Animated.divide(pan.y, 2) },
-          ],
-        },
+            { translateY: Animated.divide(pan.y, 2) }
+          ]
+        }
       ]}
       {...panResponder.panHandlers}
     >
@@ -159,27 +159,27 @@ const Notification = ({ text, icon, id, index, remove, deletedItems }) => {
       </Text>
       <CircurlarProgressBar progress={progress} />
     </Animated.View>
-  );
-};
+  )
+}
 
 const styles = StyleSheet.create({
   container: {
-    position: "absolute",
+    position: 'absolute',
     width: WIDTH,
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
     height: HEIGHT,
     marginLeft: SPACING_OUTSIDE,
     paddingLeft: SPACING_INSIDE,
     paddingRight: SPACING_INSIDE,
     backgroundColor: BG_COLOR,
-    borderRadius: 10,
+    borderRadius: 10
   },
   text: {
     marginLeft: 20,
     marginRight: 10,
-    flex: 1,
-  },
-});
+    flex: 1
+  }
+})
 
-export default Notification;
+export default Notification

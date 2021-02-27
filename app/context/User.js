@@ -18,7 +18,6 @@ import {
 } from './User/index'
 import { getUserAuthenticated } from '../../graphql/Custom/user.queries'
 import { updatedUserAuthenticated } from '../../graphql/Custom/user.subscriptions'
-import { updatedUser } from '../../graphql/subscriptions'
 import { Image } from 'react-native'
 
 const profilePlaceholderURI = Image.resolveAssetSource(

@@ -60,6 +60,7 @@ export const updatedUserAuthenticated = /* GraphQL */ `
               name
               stages
               summary
+              teamID
             }
             startup {
               capitalDemand
@@ -81,6 +82,7 @@ export const updatedUserAuthenticated = /* GraphQL */ `
               lookingForFunding
               members {
                 items {
+                  id
                   role
                   admin
                   user {
@@ -105,6 +107,7 @@ export const updatedUserAuthenticated = /* GraphQL */ `
               }
               stage
               summary
+              teamID
             }
           }
         }

@@ -34,6 +34,10 @@ const LoginModal = ({ userData, navigation }) => {
 
   const [loading, setLoading] = useState(false)
 
+  const avatarPlaceholder = Image.resolveAssetSource(
+    require('../../assets/profile_placeholder.png')
+  ).uri
+
   useEffect(() => {
     if (modalIsShown('Login')) {
       setErrorMessage('')
@@ -42,24 +46,23 @@ const LoginModal = ({ userData, navigation }) => {
   }, [modalIsShown('Login')])
 
   const handleSignInSubmit = async () => {
-    setLoading(true)
     try {
+      setLoading(true)
       const user = await login({
         username: userData.email,
         password: password
       })
-
+      setLoading(false)
       if (user.attributes) {
         hideAllModals()
       }
     } catch (error) {
+      setLoading(false)
       if (error.message === 'AUTHORIZATION_ERROR') {
         setErrorMessage('Your entered password is invalid.')
       } else {
         console.log('Error from handleSignInSubmit', error)
       }
-    } finally {
-      setLoading(false)
     }
   }
 
@@ -103,7 +106,9 @@ const LoginModal = ({ userData, navigation }) => {
           <View style={styles.userInfo}>
             <Image
               style={styles.userInfoAvatar}
-              source={require('../../assets/profilbild.jpg')}
+              source={{
+                uri: userData.avatarURI ? userData.avatarURI : avatarPlaceholder
+              }}
             />
             <Text style={styles.userInfoText}>{userData.firstname}</Text>
             <Text style={styles.userInfoText}>{userData.email}</Text>
@@ -133,20 +138,6 @@ const LoginModal = ({ userData, navigation }) => {
               loading={loading}
               style={styles.formButton}
             />
-          </View>
-          <Divider text="or" />
-          <View style={styles.socialLogins}>
-            <TouchableHighlight onPress={() => logout()}>
-              <View style={styles.socialButton}>
-                <Ionicons
-                  name="logo-facebook"
-                  style={styles.socialButtonIcon}
-                />
-                <Text style={styles.socialButtonText}>
-                  Continue with Facebook
-                </Text>
-              </View>
-            </TouchableHighlight>
           </View>
         </ScrollView>
       </Modal>

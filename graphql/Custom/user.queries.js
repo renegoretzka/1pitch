@@ -4,6 +4,7 @@ export const getUserByEmail = /* GraphQL */ `
       id
       email
       firstname
+      lastname
       avatar {
         bucket
         region
@@ -76,6 +77,7 @@ export const getUserAuthenticated = /* GraphQL */ `
               name
               stages
               summary
+              teamID
             }
             startup {
               capitalDemand
@@ -97,6 +99,7 @@ export const getUserAuthenticated = /* GraphQL */ `
               lookingForFunding
               members {
                 items {
+                  id
                   role
                   admin
                   user {
@@ -121,6 +124,7 @@ export const getUserAuthenticated = /* GraphQL */ `
               }
               stage
               summary
+              teamID
             }
           }
         }
