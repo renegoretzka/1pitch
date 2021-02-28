@@ -11,6 +11,12 @@ import {
 } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 
+import config from '../../../../aws-exports'
+const {
+  aws_user_files_s3_bucket_region: region,
+  aws_user_files_s3_bucket: bucket
+} = config
+
 import * as mime from 'react-native-mime-types'
 import * as ImagePicker from 'expo-image-picker'
 import * as ImageManipulator from 'expo-image-manipulator'

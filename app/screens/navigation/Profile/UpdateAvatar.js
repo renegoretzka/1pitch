@@ -4,14 +4,12 @@ import {
   StyleSheet,
   Text,
   View,
-  Pressable,
-  Dimensions
+  Pressable
 } from 'react-native'
 
 import { Camera } from 'expo-camera'
 import * as ImagePicker from 'expo-image-picker'
 import * as ImageManipulator from 'expo-image-manipulator'
-import * as Permissions from 'expo-permissions'
 
 import { textNormal } from '../../../styles/containers'
 import { color } from '../../../styles/colors'

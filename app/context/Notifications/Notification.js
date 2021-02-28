@@ -157,7 +157,10 @@ const Notification = ({ text, icon, id, index, remove, deletedItems }) => {
       <Text style={[textNormal, styles.text]} numberOfLines={2}>
         {text}
       </Text>
-      <CircurlarProgressBar progress={progress} />
+      <CircurlarProgressBar
+        progress={progress}
+        style={{ color: color.primary }}
+      />
     </Animated.View>
   )
 }

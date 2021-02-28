@@ -70,3 +70,49 @@ export const myTeams = /* GraphQL */ `
     }
   }
 `
+export const getNextStartup = /* GraphQL */ `
+  query GetNextStartup($input: GetNextStartupInput!) {
+    getNextStartup(input: $input) {
+      id
+      name
+      logo {
+        bucket
+        region
+        key
+      }
+      summary
+      pitch {
+        bucket
+        region
+        key
+      }
+      lookingForFunding
+      stage
+      capitalDemand
+      teamID
+      createdAt
+      updatedAt
+      members {
+        items {
+          id
+          role
+          user {
+            firstname
+            lastname
+            id
+            bio
+          }
+          createdAt
+        }
+      }
+      industries {
+        items {
+          industry {
+            id
+            name
+          }
+        }
+      }
+    }
+  }
+`

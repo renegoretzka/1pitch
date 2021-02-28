@@ -1,3 +1,4 @@
+import { Storage } from 'aws-amplify'
 import React, { useEffect, useState } from 'react'
 import {
   View,
@@ -6,7 +7,8 @@ import {
   SafeAreaView,
   ScrollView,
   Text,
-  Pressable
+  Pressable,
+  Image
 } from 'react-native'
 
 import Logo from '../../components/ui/Logo'
@@ -17,12 +19,87 @@ import {
   safeArea,
   scrollContainer,
   textHeader,
-  textNormalBigger
+  textNormal,
+  textNormalBigger,
+  userAvatar
 } from '../../styles/containers'
+import { AntDesign } from '@expo/vector-icons'
+import { MaterialCommunityIcons } from '@expo/vector-icons'
+import HomeStartup from './Home/HomeStartup'
+import HomeInvestor from './Home/HomeInvestor'
 
 const Home = ({ navigation }) => {
   const { user } = useUser()
   const [currentTeam, setCurrentTeam] = useState({})
+  const [teams, setTeams] = useState([])
+
+  const setTeamImages = async (items) => {
+    try {
+      let newTeams = []
+      for (let item of user.teams.items) {
+        const { team } = item
+        let logoURI
+        let newItem = {}
+        if (team.investor) {
+          if (team.investor?.logo) {
+            logoURI = await Storage.get(team.investor.logo.key)
+            newItem = {
+              ...item,
+              team: {
+                investor: {
+                  ...team.investor,
+                  logoURI
+                }
+              }
+            }
+          } else {
+            newItem = {
+              ...item,
+              team: {
+                investor: {
+                  ...team.investor
+                }
+              }
+            }
+          }
+        } else if (team.startup) {
+          if (team.startup?.logo) {
+            logoURI = await Storage.get(team.startup.logo.key)
+            newItem = {
+              ...item,
+              team: {
+                startup: {
+                  ...team.startup,
+                  logoURI
+                }
+              }
+            }
+          } else {
+            newItem = {
+              ...item,
+              team: {
+                startup: {
+                  ...team.startup
+                }
+              }
+            }
+          }
+        }
+        newTeams = [...newTeams, newItem]
+      }
+      return newTeams
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  useEffect(() => {
+    if (user?.teams?.items) {
+      setTeamImages(user?.teams?.items).then((newTeams) => {
+        setTeams(newTeams)
+      })
+    }
+  }, [user])
 
   useEffect(() => {
     /*if (user?.teams?.items.length === 1) {
@@ -31,7 +108,7 @@ const Home = ({ navigation }) => {
   }, [user])
 
   useEffect(() => {
-    console.log(currentTeam)
+    //console.log(currentTeam)
   }, [currentTeam])
 
   return (
@@ -40,26 +117,71 @@ const Home = ({ navigation }) => {
       <ScrollView style={scrollContainer} contentInset={{ bottom: 85 }}>
         <View style={styles.header}>
           <Logo />
+          {Object.keys(currentTeam).length > 1 ? (
+            <Pressable
+              onPress={() => setCurrentTeam({})}
+              style={{ flexDirection: 'row' }}
+            >
+              <Text style={[textNormal, { marginRight: 6 }]}>Switch team</Text>
+              <MaterialCommunityIcons
+                name="account-switch"
+                size={28}
+                color={color.white}
+              />
+            </Pressable>
+          ) : (
+            <></>
+          )}
         </View>
-        {!Object.keys(currentTeam).length && (
+        {!Object.keys(currentTeam).length ? (
           <View>
-            <Text style={textNormalBigger}>
+            <Text style={[textNormalBigger, { marginBottom: 25 }]}>
               Select one of your teams to continue.
             </Text>
-            {user.teams.items?.map(({ teamItem }) => {
-              let team
-              if (teamItem?.startup) {
-                team = teamItem?.startup
+            {teams?.map(({ team }) => {
+              let teamData
+              if (team.startup) {
+                teamData = { ...team.startup, type: 'Startup' }
+              } else if (team.investor) {
+                teamData = { ...team.investor, type: 'Investor' }
               }
               return (
-                <Pressable key={team?.id}>
-                  <Text style={textHeader}>{team?.name}</Text>
+                <Pressable
+                  onPress={() => {
+                    setCurrentTeam(teamData)
+                  }}
+                  style={{
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    marginBottom: 20
+                  }}
+                  key={teamData.id}
+                >
+                  {teamData.logoURI && (
+                    <Image
+                      style={userAvatar}
+                      source={{ uri: teamData.logoURI }}
+                    />
+                  )}
+                  <View>
+                    <Text style={textNormal}>{teamData.type} Team</Text>
+                    <Text style={textHeader}>{teamData.name}</Text>
+                  </View>
+                  <AntDesign
+                    style={{ marginLeft: 'auto' }}
+                    name="rightcircleo"
+                    size={28}
+                    color={color.primary}
+                  />
                 </Pressable>
               )
             })}
           </View>
+        ) : currentTeam.type === 'Startup' ? (
+          <HomeStartup teamData={currentTeam} />
+        ) : (
+          <HomeInvestor teamData={currentTeam} />
         )}
-        <View></View>
       </ScrollView>
     </SafeAreaView>
   )
