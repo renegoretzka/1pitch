@@ -1,30 +1,30 @@
 import React from 'react'
+import { Platform } from 'react-native'
 
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 
 import Home from '../navigation/Home'
-import Chat from '../navigation/Chat'
+import ChatStack from './ChatStack'
+import TeamStack from './TeamStack'
+import ProfileStack from './ProfileStack'
 
 import { color } from '../../styles/colors'
 import { FontAwesome } from '@expo/vector-icons'
 import { FontAwesome5 } from '@expo/vector-icons'
 import { Ionicons } from '@expo/vector-icons'
-import { Platform } from 'react-native'
-import ProfileStack from './ProfileStack'
-import TeamStack from './TeamStack'
 
 const Tab = createBottomTabNavigator()
 
 const TabStack = ({ route }) => {
   return (
     <Tab.Navigator
-      initialRouteName="Home"
+      initialRouteName="Chats"
       screenOptions={({ route }) => ({
         tabBarIcon: ({ color, size }) => {
           if (route.name === 'Home') {
             return <FontAwesome name="home" size={size} color={color} />
           } else if (route.name === 'Chats') {
-            return <Ionicons name="ios-chatboxes" size={size} color={color} />
+            return <Ionicons name="ios-chatbubbles" size={24} color={color} />
           } else if (route.name === 'Teams') {
             return <FontAwesome name="group" size={size} color={color} />
           } else if (route.name === 'Profile') {
@@ -35,7 +35,7 @@ const TabStack = ({ route }) => {
       tabBarOptions={mainTabBarOptions}
     >
       <Tab.Screen name="Home" component={Home} />
-      <Tab.Screen name="Chats" component={Chat} options={{ tabBarBadge: 3 }} />
+      <Tab.Screen name="Chats" component={ChatStack} />
       <Tab.Screen name="Teams" component={TeamStack} />
       <Tab.Screen name="Profile" component={ProfileStack} />
     </Tab.Navigator>

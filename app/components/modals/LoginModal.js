@@ -38,12 +38,13 @@ const LoginModal = ({ userData, navigation }) => {
     require('../../assets/profile_placeholder.png')
   ).uri
 
-  useEffect(() => {
+  // This is causing react no-op error, need to insert again later
+  /*useEffect(() => {
     if (modalIsShown('Login')) {
       setErrorMessage('')
       setPassword('')
     }
-  }, [modalIsShown('Login')])
+  }, [modalIsShown('Login')])*/
 
   const handleSignInSubmit = async () => {
     try {

@@ -14,6 +14,9 @@ import {
 import Logo from '../../components/ui/Logo'
 import { useUser } from '../../context/User'
 
+import HomeStartup from './Home/HomeStartup'
+import HomeInvestor from './Home/HomeInvestor'
+
 import { color } from '../../styles/colors'
 import {
   safeArea,
@@ -25,8 +28,6 @@ import {
 } from '../../styles/containers'
 import { AntDesign } from '@expo/vector-icons'
 import { MaterialCommunityIcons } from '@expo/vector-icons'
-import HomeStartup from './Home/HomeStartup'
-import HomeInvestor from './Home/HomeInvestor'
 
 const Home = ({ navigation }) => {
   const { user } = useUser()
@@ -100,16 +101,6 @@ const Home = ({ navigation }) => {
       })
     }
   }, [user])
-
-  useEffect(() => {
-    /*if (user?.teams?.items.length === 1) {
-      setCurrentTeam(user.teams.items[0])
-    }*/
-  }, [user])
-
-  useEffect(() => {
-    //console.log(currentTeam)
-  }, [currentTeam])
 
   return (
     <SafeAreaView style={safeArea}>

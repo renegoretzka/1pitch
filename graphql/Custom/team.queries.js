@@ -70,6 +70,86 @@ export const myTeams = /* GraphQL */ `
     }
   }
 `
+
+export const getMyChannels = /* GraphQL */ `
+  query GetMyChannels {
+    me {
+      teams {
+        items {
+          team {
+            investor {
+              id
+              name
+              logo {
+                bucket
+                key
+                region
+              }
+              channels {
+                items {
+                  id
+                  createdAt
+                  startup {
+                    id
+                    name
+                    logo {
+                      bucket
+                      key
+                      region
+                    }
+                  }
+                  investor {
+                    id
+                    name
+                    logo {
+                      bucket
+                      key
+                      region
+                    }
+                  }
+                }
+              }
+            }
+            startup {
+              id
+              name
+              logo {
+                bucket
+                key
+                region
+              }
+              channels {
+                items {
+                  id
+                  createdAt
+                  investor {
+                    id
+                    name
+                    logo {
+                      bucket
+                      key
+                      region
+                    }
+                  }
+                  startup {
+                    id
+                    name
+                    logo {
+                      bucket
+                      key
+                      region
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+`
+
 export const getNextStartup = /* GraphQL */ `
   query GetNextStartup($input: GetNextStartupInput!) {
     getNextStartup(input: $input) {

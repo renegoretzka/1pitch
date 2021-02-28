@@ -9,7 +9,7 @@ const useBehindKeyboard = () => {
     e.target.measureInWindow((y, height) => {
       if (height > windowHeight - 350) {
         Animated.timing(keyboardPosition, {
-          toValue: -240,
+          toValue: -300,
           duration: 190,
           useNativeDriver: true
         }).start()
