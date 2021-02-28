@@ -18,7 +18,7 @@ const Tab = createBottomTabNavigator()
 const TabStack = ({ route }) => {
   return (
     <Tab.Navigator
-      initialRouteName="Chats"
+      initialRouteName="Home"
       screenOptions={({ route }) => ({
         tabBarIcon: ({ color, size }) => {
           if (route.name === 'Home') {
