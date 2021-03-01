@@ -34,12 +34,14 @@ const SignModal = ({ navigation }) => {
 
   const [loading, setLoading] = useState(false)
 
+  /*
   useEffect(() => {
     if (modalIsShown('Sign')) {
       setErrorMessage('')
       setEmail('rene@renka.de')
     }
   }, [modalIsShown('Sign')])
+  */
 
   const handleUserLoginModal = async () => {
     // TODO: move this to userExists and return with the user object to prevent unneccessary api calls
