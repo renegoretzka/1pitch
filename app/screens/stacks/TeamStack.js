@@ -126,7 +126,8 @@ const headerOptions = {
     },
     shadowOpacity: 0.27,
     shadowRadius: 4.65,
-    elevation: 6
+    elevation: 6,
+    borderBottomWidth: 0
   },
   headerTintColor: color.white,
   headerTitleStyle: {

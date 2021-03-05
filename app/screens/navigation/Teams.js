@@ -10,6 +10,7 @@ import {
   Platform,
   Pressable
 } from 'react-native'
+import { useDimensions } from '@react-native-community/hooks'
 
 import SubmitButton from '../../components/ui/SubmitButton'
 
@@ -131,7 +132,14 @@ const Teams = ({ navigation }) => {
   return (
     <SafeAreaView style={safeArea}>
       <StatusBar barStyle="light-content" backgroundColor={color.background} />
-      <ScrollView style={styles.container} contentInset={{ bottom: 85 }}>
+      <View
+        style={[
+          styles.container,
+          {
+            maxHeight: useDimensions().window.height - 65
+          }
+        ]}
+      >
         <View style={styles.header}>
           <Text style={textHeader}>Your teams</Text>
           {teams.length ? (
@@ -170,7 +178,7 @@ const Teams = ({ navigation }) => {
             </View>
           )}
         </View>
-      </ScrollView>
+      </View>
     </SafeAreaView>
   )
 }
@@ -197,7 +205,7 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    marginBottom: 65
+    paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0
   },
   safeContainer: {
     paddingLeft: SPACING_VIEW,

@@ -7,9 +7,12 @@ import {
   Text,
   View,
   TextInput,
-  ScrollView
+  ScrollView,
+  SafeAreaView,
+  StatusBar
 } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
+import { useDimensions } from '@react-native-community/hooks'
 
 import config from '../../../../aws-exports'
 const {
@@ -37,6 +40,7 @@ import {
   SPACING_VIEW
 } from '../../../styles/variables'
 import {
+  safeArea,
   scrollContainer,
   textInput,
   textNormal,
@@ -412,228 +416,239 @@ const UpdateTeam = ({ route }) => {
 
     return (
       <>
-        <Animated.ScrollView
-          style={[
-            scrollContainer,
-            {
-              transform: [{ translateY: keyboardPosition }]
-            }
-          ]}
-          contentInset={{ bottom: 115 }}
-        >
-          <View styles={styles.container}>
-            <Text style={styles.sub}>Your team</Text>
-            <View style={styles.nameContainer}>
-              <Image
-                style={userAvatar}
-                source={{
-                  uri: teamInfo.logoURI ? teamInfo.logoURI : logoPlaceholder
-                }}
-              />
-              <Pressable onPress={() => pickImage()} style={styles.row}>
-                <Feather
-                  name="upload"
-                  style={{ fontSize: 28, marginRight: SPACING_BETWEEN_SMALL }}
-                  color="white"
-                />
-                <Text style={textNormalBigger}>Pick your logo</Text>
-              </Pressable>
-            </View>
-            <TextInput
-              value={teamInfo.name}
-              onChangeText={(value) =>
-                setTeamInfo({ ...teamInfo, name: value })
+        <SafeAreaView style={safeArea}>
+          <StatusBar
+            barStyle="light-content"
+            backgroundColor={color.background}
+          />
+          <Animated.ScrollView
+            style={[
+              styles.scrollview,
+              scrollContainer,
+              {
+                transform: [{ translateY: keyboardPosition }],
+                maxHeight: useDimensions().window.height - 65 - 64
               }
-              onFocus={(e) => {
-                handleInputBehindKeyboard(e)
-              }}
-              placeholder="Name of your team"
-              keyboardAppearance="dark"
-              style={[textInput, styles.input]}
-            />
-            <Text style={styles.sub}>Summary</Text>
-            <TextInput
-              value={teamInfo.summary}
-              onChangeText={(value) =>
-                setTeamInfo({ ...teamInfo, summary: value })
-              }
-              onFocus={(e) => {
-                handleInputBehindKeyboard(e)
-              }}
-              placeholder="Describe your team here"
-              keyboardAppearance="dark"
-              multiline={true}
-              style={[textInput, styles.inputMulti]}
-            />
-            <Text style={styles.sub}>Stages</Text>
-            <View style={styles.tagContainer}>
-              {stages.map((stage) => {
-                return (
-                  <Pressable
-                    onPress={() => {
-                      if (teamInfo.stages.includes(stage)) {
-                        let stages = teamInfo.stages.filter(
-                          (item) => item !== stage
-                        )
-                        setTeamInfo({
-                          ...teamInfo,
-                          stages
-                        })
-                      } else {
-                        setTeamInfo({
-                          ...teamInfo,
-                          stages: [...teamInfo.stages, stage]
-                        })
-                      }
-                    }}
-                    key={stage}
-                    style={[
-                      styles.tag,
-                      {
-                        backgroundColor: teamInfo.stages?.includes(stage)
-                          ? color.primary
-                          : color.secondary
-                      }
-                    ]}
-                  >
-                    <Text style={styles.tagText}>
-                      {stage === 'IDEA'
-                        ? 'Idea'
-                        : stage === 'BUSINESS_PLAN'
-                        ? 'Business plan'
-                        : stage === 'MVP'
-                        ? 'MVP'
-                        : stage === 'PAYING_CUSTOMERS'
-                        ? 'Paying customers'
-                        : ''}
-                    </Text>
-                  </Pressable>
-                )
-              })}
-            </View>
-            <Text style={styles.sub}>Industries</Text>
-            <View style={styles.tagContainer}>
-              {industries.map((industry) => {
-                return (
-                  <Pressable
-                    onPress={() => {
-                      if (
-                        isTeamIndustries(teamInfo.industries.items, industry.id)
-                      ) {
-                        let industries = filterTeamIndustry(
-                          teamInfo.industries.items,
-                          industry.id
-                        )
-                        setTeamInfo({
-                          ...teamInfo,
-                          industries: setTeamIndustries(industries)
-                        })
-                      } else {
-                        setTeamInfo({
-                          ...teamInfo,
-                          industries: {
-                            items: [
-                              ...teamInfo.industries.items,
-                              { industry: industry }
-                            ]
-                          }
-                        })
-                      }
-                    }}
-                    key={industry.id}
-                    style={[
-                      styles.tag,
-                      {
-                        backgroundColor: isTeamIndustries(
-                          teamInfo.industries.items,
-                          industry.id
-                        )
-                          ? color.primary
-                          : color.secondary
-                      }
-                    ]}
-                  >
-                    <Text style={styles.tagText}>{industry.name}</Text>
-                  </Pressable>
-                )
-              })}
-            </View>
-            <Text style={styles.sub}>Capital investment in USD</Text>
-            <Text style={textNormal}>From</Text>
-            <TextInput
-              value={teamInfo.capitalInvestMin?.toString()}
-              onChangeText={(value) =>
-                setTeamInfo({ ...teamInfo, capitalInvestMin: value })
-              }
-              onFocus={(e) => {
-                handleInputBehindKeyboard(e)
-              }}
-              placeholder="Amount in USD"
-              keyboardAppearance="dark"
-              style={[textInput]}
-            />
-            <Text style={[textNormal, { marginTop: 10 }]}>Up to</Text>
-            <TextInput
-              value={teamInfo.capitalInvestMax?.toString()}
-              onChangeText={(value) =>
-                setTeamInfo({ ...teamInfo, capitalInvestMax: value })
-              }
-              onFocus={(e) => {
-                handleInputBehindKeyboard(e)
-              }}
-              placeholder="Amount in USD"
-              keyboardAppearance="dark"
-              style={[textInput]}
-            />
-            <View
-              style={[
-                styles.row,
-                { marginTop: 20, justifyContent: 'space-between' }
-              ]}
-            >
-              <Text style={styles.sub}>Team</Text>
-              {admin === true && (
-                <Pressable
-                  onPress={() => showModal('AddMember')}
-                  style={styles.row}
-                >
-                  <Text style={textNormal}>Add member</Text>
-                  <AntDesign name="adduser" size={30} color={color.primary} />
-                </Pressable>
-              )}
-            </View>
-            {investor.members.items.map((member) => (
-              <View style={styles.member} key={member.user.id}>
+            ]}
+            contentInset={{ bottom: 85 }}
+          >
+            <View styles={styles.container}>
+              <Text style={styles.sub}>Your team</Text>
+              <View style={styles.nameContainer}>
                 <Image
-                  style={styles.memberAvatar}
+                  style={userAvatar}
                   source={{
-                    uri: member.user.avatarURI
-                      ? member.user.avatarURI
-                      : avatarPlaceholder
+                    uri: teamInfo.logoURI ? teamInfo.logoURI : logoPlaceholder
                   }}
                 />
-                <View>
-                  <Text style={styles.memberName}>
-                    {member.user.firstname} {member.user.lastname}
-                  </Text>
-                  <Text style={styles.memberRole}>{member.role}</Text>
-                </View>
+                <Pressable onPress={() => pickImage()} style={styles.row}>
+                  <Feather
+                    name="upload"
+                    style={{ fontSize: 28, marginRight: SPACING_BETWEEN_SMALL }}
+                    color="white"
+                  />
+                  <Text style={textNormalBigger}>Pick your logo</Text>
+                </Pressable>
+              </View>
+              <TextInput
+                value={teamInfo.name}
+                onChangeText={(value) =>
+                  setTeamInfo({ ...teamInfo, name: value })
+                }
+                onFocus={(e) => {
+                  handleInputBehindKeyboard(e)
+                }}
+                placeholder="Name of your team"
+                keyboardAppearance="dark"
+                style={[textInput, styles.input]}
+              />
+              <Text style={styles.sub}>Summary</Text>
+              <TextInput
+                value={teamInfo.summary}
+                onChangeText={(value) =>
+                  setTeamInfo({ ...teamInfo, summary: value })
+                }
+                onFocus={(e) => {
+                  handleInputBehindKeyboard(e)
+                }}
+                placeholder="Describe your team here"
+                keyboardAppearance="dark"
+                multiline={true}
+                style={[textInput, styles.inputMulti]}
+              />
+              <Text style={styles.sub}>Stages</Text>
+              <View style={styles.tagContainer}>
+                {stages.map((stage) => {
+                  return (
+                    <Pressable
+                      onPress={() => {
+                        if (teamInfo.stages.includes(stage)) {
+                          let stages = teamInfo.stages.filter(
+                            (item) => item !== stage
+                          )
+                          setTeamInfo({
+                            ...teamInfo,
+                            stages
+                          })
+                        } else {
+                          setTeamInfo({
+                            ...teamInfo,
+                            stages: [...teamInfo.stages, stage]
+                          })
+                        }
+                      }}
+                      key={stage}
+                      style={[
+                        styles.tag,
+                        {
+                          backgroundColor: teamInfo.stages?.includes(stage)
+                            ? color.primary
+                            : color.secondary
+                        }
+                      ]}
+                    >
+                      <Text style={styles.tagText}>
+                        {stage === 'IDEA'
+                          ? 'Idea'
+                          : stage === 'BUSINESS_PLAN'
+                          ? 'Business plan'
+                          : stage === 'MVP'
+                          ? 'MVP'
+                          : stage === 'PAYING_CUSTOMERS'
+                          ? 'Paying customers'
+                          : ''}
+                      </Text>
+                    </Pressable>
+                  )
+                })}
+              </View>
+              <Text style={styles.sub}>Industries</Text>
+              <View style={styles.tagContainer}>
+                {industries.map((industry) => {
+                  return (
+                    <Pressable
+                      onPress={() => {
+                        if (
+                          isTeamIndustries(
+                            teamInfo.industries.items,
+                            industry.id
+                          )
+                        ) {
+                          let industries = filterTeamIndustry(
+                            teamInfo.industries.items,
+                            industry.id
+                          )
+                          setTeamInfo({
+                            ...teamInfo,
+                            industries: setTeamIndustries(industries)
+                          })
+                        } else {
+                          setTeamInfo({
+                            ...teamInfo,
+                            industries: {
+                              items: [
+                                ...teamInfo.industries.items,
+                                { industry: industry }
+                              ]
+                            }
+                          })
+                        }
+                      }}
+                      key={industry.id}
+                      style={[
+                        styles.tag,
+                        {
+                          backgroundColor: isTeamIndustries(
+                            teamInfo.industries.items,
+                            industry.id
+                          )
+                            ? color.primary
+                            : color.secondary
+                        }
+                      ]}
+                    >
+                      <Text style={styles.tagText}>{industry.name}</Text>
+                    </Pressable>
+                  )
+                })}
+              </View>
+              <Text style={styles.sub}>Capital investment in USD</Text>
+              <Text style={textNormal}>From</Text>
+              <TextInput
+                value={teamInfo.capitalInvestMin?.toString()}
+                onChangeText={(value) =>
+                  setTeamInfo({ ...teamInfo, capitalInvestMin: value })
+                }
+                onFocus={(e) => {
+                  handleInputBehindKeyboard(e)
+                }}
+                placeholder="Amount in USD"
+                keyboardAppearance="dark"
+                style={[textInput]}
+              />
+              <Text style={[textNormal, { marginTop: 10 }]}>Up to</Text>
+              <TextInput
+                value={teamInfo.capitalInvestMax?.toString()}
+                onChangeText={(value) =>
+                  setTeamInfo({ ...teamInfo, capitalInvestMax: value })
+                }
+                onFocus={(e) => {
+                  handleInputBehindKeyboard(e)
+                }}
+                placeholder="Amount in USD"
+                keyboardAppearance="dark"
+                style={[textInput]}
+              />
+              <View
+                style={[
+                  styles.row,
+                  { marginTop: 20, justifyContent: 'space-between' }
+                ]}
+              >
+                <Text style={styles.sub}>Team</Text>
                 {admin === true && (
                   <Pressable
-                    style={styles.memberEdit}
-                    onPress={() => handleEditMemberModal(member)}
+                    onPress={() => showModal('AddMember')}
+                    style={styles.row}
                   >
-                    <FontAwesome5
-                      name="user-edit"
-                      size={28}
-                      color={color.white}
-                    />
+                    <Text style={textNormal}>Add member</Text>
+                    <AntDesign name="adduser" size={30} color={color.primary} />
                   </Pressable>
                 )}
               </View>
-            ))}
-          </View>
-        </Animated.ScrollView>
+              {investor.members.items.map((member) => (
+                <View style={styles.member} key={member.user.id}>
+                  <Image
+                    style={styles.memberAvatar}
+                    source={{
+                      uri: member.user.avatarURI
+                        ? member.user.avatarURI
+                        : avatarPlaceholder
+                    }}
+                  />
+                  <View>
+                    <Text style={styles.memberName}>
+                      {member.user.firstname} {member.user.lastname}
+                    </Text>
+                    <Text style={styles.memberRole}>{member.role}</Text>
+                  </View>
+                  {admin === true && (
+                    <Pressable
+                      style={styles.memberEdit}
+                      onPress={() => handleEditMemberModal(member)}
+                    >
+                      <FontAwesome5
+                        name="user-edit"
+                        size={28}
+                        color={color.white}
+                      />
+                    </Pressable>
+                  )}
+                </View>
+              ))}
+            </View>
+          </Animated.ScrollView>
+        </SafeAreaView>
         <AddTeamMemberModal
           currentMembers={investor.members.items}
           teamID={investor.teamID}
@@ -646,278 +661,291 @@ const UpdateTeam = ({ route }) => {
     const { startup } = team
     return (
       <>
-        <Animated.ScrollView
-          style={[
-            scrollContainer,
-            {
-              transform: [{ translateY: keyboardPosition }]
-            }
-          ]}
-          contentInset={{ bottom: 115 }}
-        >
-          <View styles={styles.container}>
-            <Text style={styles.sub}>Your startup</Text>
-            <View style={styles.nameContainer}>
-              <Image
-                style={userAvatar}
-                source={{
-                  uri: teamInfo.logoURI ? teamInfo.logoURI : logoPlaceholder
+        <SafeAreaView style={safeArea}>
+          <StatusBar
+            barStyle="light-content"
+            backgroundColor={color.background}
+          />
+          <Animated.ScrollView
+            style={[
+              scrollContainer,
+              {
+                transform: [{ translateY: keyboardPosition }]
+              }
+            ]}
+            contentInset={{ bottom: 115 }}
+          >
+            <View styles={styles.container}>
+              <Text style={styles.sub}>Your startup</Text>
+              <View style={styles.nameContainer}>
+                <Image
+                  style={userAvatar}
+                  source={{
+                    uri: teamInfo.logoURI ? teamInfo.logoURI : logoPlaceholder
+                  }}
+                />
+                <Pressable onPress={() => pickImage()} style={styles.row}>
+                  <Feather
+                    name="upload"
+                    style={{ fontSize: 28, marginRight: SPACING_BETWEEN_SMALL }}
+                    color="white"
+                  />
+                  <Text style={textNormalBigger}>Pick your logo</Text>
+                </Pressable>
+              </View>
+              <TextInput
+                value={teamInfo.name}
+                onChangeText={(value) =>
+                  setTeamInfo({ ...teamInfo, name: value })
+                }
+                onFocus={(e) => {
+                  handleInputBehindKeyboard(e)
                 }}
+                placeholder="Name of your startup"
+                keyboardAppearance="dark"
+                style={[textInput, styles.input]}
               />
-              <Pressable onPress={() => pickImage()} style={styles.row}>
-                <Feather
-                  name="upload"
-                  style={{ fontSize: 28, marginRight: SPACING_BETWEEN_SMALL }}
-                  color="white"
-                />
-                <Text style={textNormalBigger}>Pick your logo</Text>
-              </Pressable>
-            </View>
-            <TextInput
-              value={teamInfo.name}
-              onChangeText={(value) =>
-                setTeamInfo({ ...teamInfo, name: value })
-              }
-              onFocus={(e) => {
-                handleInputBehindKeyboard(e)
-              }}
-              placeholder="Name of your startup"
-              keyboardAppearance="dark"
-              style={[textInput, styles.input]}
-            />
-            <Text style={styles.sub}>Summary</Text>
-            <TextInput
-              value={teamInfo.summary}
-              onChangeText={(value) =>
-                setTeamInfo({ ...teamInfo, summary: value })
-              }
-              onFocus={(e) => {
-                handleInputBehindKeyboard(e)
-              }}
-              placeholder="Describe your startup here"
-              keyboardAppearance="dark"
-              multiline={true}
-              style={[textInput, styles.inputMulti]}
-            />
-            <Text style={styles.sub}>Stage</Text>
-            <View style={{ flexDirection: 'row' }}>
-              <View style={{ width: 20, height: 'auto', marginHorizontal: 20 }}>
+              <Text style={styles.sub}>Summary</Text>
+              <TextInput
+                value={teamInfo.summary}
+                onChangeText={(value) =>
+                  setTeamInfo({ ...teamInfo, summary: value })
+                }
+                onFocus={(e) => {
+                  handleInputBehindKeyboard(e)
+                }}
+                placeholder="Describe your startup here"
+                keyboardAppearance="dark"
+                multiline={true}
+                style={[textInput, styles.inputMulti]}
+              />
+              <Text style={styles.sub}>Stage</Text>
+              <View style={{ flexDirection: 'row' }}>
                 <View
-                  style={{
-                    flex: activeStages,
-                    width: 20,
-                    borderRadius: 10,
-                    backgroundColor: color.primary
-                  }}
-                />
-                <View
-                  style={{
-                    flex: notActiveStages,
-                    width: 20,
-                    borderBottomLeftRadius: 10,
-                    borderBottomRightRadius: 10,
-                    backgroundColor: color.secondary
-                  }}
-                />
-              </View>
-              <View>
-                <Pressable
-                  onPress={() => {
-                    setTeamInfo({ ...teamInfo, stage: 'IDEA' })
-                    setActiveStages(1)
-                    setNotActiveStages(4)
-                  }}
-                  style={styles.stage}
+                  style={{ width: 20, height: 'auto', marginHorizontal: 20 }}
                 >
-                  <Text
-                    style={[
-                      styles.stageText,
-                      {
-                        color:
-                          teamInfo.stage === 'IDEA'
-                            ? color.primary
-                            : color.white
-                      }
-                    ]}
-                  >
-                    Idea
-                  </Text>
-                </Pressable>
-                <Pressable
-                  onPress={() => {
-                    setTeamInfo({ ...teamInfo, stage: 'BUSINESS_PLAN' })
-                    setActiveStages(2)
-                    setNotActiveStages(2)
-                  }}
-                  style={styles.stage}
-                >
-                  <Text
-                    style={[
-                      styles.stageText,
-                      {
-                        color:
-                          teamInfo.stage === 'BUSINESS_PLAN'
-                            ? color.primary
-                            : color.white
-                      }
-                    ]}
-                  >
-                    Business plan
-                  </Text>
-                </Pressable>
-                <Pressable
-                  onPress={() => {
-                    setTeamInfo({ ...teamInfo, stage: 'MVP' })
-                    setActiveStages(3)
-                    setNotActiveStages(1)
-                  }}
-                  style={styles.stage}
-                >
-                  <Text
-                    style={[
-                      styles.stageText,
-                      {
-                        color:
-                          teamInfo.stage === 'MVP' ? color.primary : color.white
-                      }
-                    ]}
-                  >
-                    MVP
-                  </Text>
-                </Pressable>
-                <Pressable
-                  onPress={() => {
-                    setTeamInfo({ ...teamInfo, stage: 'PAYING_CUSTOMERS' })
-                    setActiveStages(4)
-                    setNotActiveStages(0)
-                  }}
-                  style={styles.stage}
-                >
-                  <Text
-                    style={[
-                      styles.stageText,
-                      {
-                        color:
-                          teamInfo.stage === 'PAYING_CUSTOMERS'
-                            ? color.primary
-                            : color.white
-                      }
-                    ]}
-                  >
-                    Paying customers
-                  </Text>
-                </Pressable>
-              </View>
-            </View>
-            <Text style={styles.sub}>Industries</Text>
-            <View style={styles.tagContainer}>
-              {industries.map((industry) => {
-                return (
+                  <View
+                    style={{
+                      flex: activeStages,
+                      width: 20,
+                      borderRadius: 10,
+                      backgroundColor: color.primary
+                    }}
+                  />
+                  <View
+                    style={{
+                      flex: notActiveStages,
+                      width: 20,
+                      borderBottomLeftRadius: 10,
+                      borderBottomRightRadius: 10,
+                      backgroundColor: color.secondary
+                    }}
+                  />
+                </View>
+                <View>
                   <Pressable
                     onPress={() => {
-                      if (
-                        isTeamIndustries(teamInfo.industries.items, industry.id)
-                      ) {
-                        let industries = filterTeamIndustry(
-                          teamInfo.industries.items,
-                          industry.id
-                        )
-                        setTeamInfo({
-                          ...teamInfo,
-                          industries: setTeamIndustries(industries)
-                        })
-                      } else {
-                        setTeamInfo({
-                          ...teamInfo,
-                          industries: {
-                            items: [
-                              ...teamInfo.industries.items,
-                              { industry: industry }
-                            ]
-                          }
-                        })
-                      }
+                      setTeamInfo({ ...teamInfo, stage: 'IDEA' })
+                      setActiveStages(1)
+                      setNotActiveStages(4)
                     }}
-                    key={industry.id}
-                    style={[
-                      styles.tag,
-                      {
-                        backgroundColor: isTeamIndustries(
-                          teamInfo.industries.items,
-                          industry.id
-                        )
-                          ? color.primary
-                          : color.secondary
-                      }
-                    ]}
+                    style={styles.stage}
                   >
-                    <Text style={styles.tagText}>{industry.name}</Text>
+                    <Text
+                      style={[
+                        styles.stageText,
+                        {
+                          color:
+                            teamInfo.stage === 'IDEA'
+                              ? color.primary
+                              : color.white
+                        }
+                      ]}
+                    >
+                      Idea
+                    </Text>
                   </Pressable>
-                )
-              })}
-            </View>
-            <Text style={styles.sub}>Capital demand in USD</Text>
-            <TextInput
-              value={teamInfo.capitalDemand?.toString()}
-              onChangeText={(value) =>
-                setTeamInfo({ ...teamInfo, capitalDemand: value })
-              }
-              onFocus={(e) => {
-                handleInputBehindKeyboard(e)
-              }}
-              placeholder="Amount in USD"
-              keyboardAppearance="dark"
-              style={[textInput]}
-            />
-            <View
-              style={[
-                styles.row,
-                { marginTop: 20, justifyContent: 'space-between' }
-              ]}
-            >
-              <Text style={styles.sub}>Team</Text>
-              {admin === true && (
-                <Pressable
-                  onPress={() => showModal('AddMember')}
-                  style={styles.row}
-                >
-                  <Text style={textNormal}>Add member</Text>
-                  <AntDesign name="adduser" size={30} color={color.primary} />
-                </Pressable>
-              )}
-            </View>
-            {startup.members.items.map((member) => (
-              <View style={styles.member} key={member.user.id}>
-                <Image
-                  style={styles.memberAvatar}
-                  source={{
-                    uri: member.user.avatarURI
-                      ? member.user.avatarURI
-                      : avatarPlaceholder
-                  }}
-                />
-                <View>
-                  <Text style={styles.memberName}>
-                    {member.user.firstname} {member.user.lastname}
-                  </Text>
-                  <Text style={styles.memberRole}>{member.role}</Text>
+                  <Pressable
+                    onPress={() => {
+                      setTeamInfo({ ...teamInfo, stage: 'BUSINESS_PLAN' })
+                      setActiveStages(2)
+                      setNotActiveStages(2)
+                    }}
+                    style={styles.stage}
+                  >
+                    <Text
+                      style={[
+                        styles.stageText,
+                        {
+                          color:
+                            teamInfo.stage === 'BUSINESS_PLAN'
+                              ? color.primary
+                              : color.white
+                        }
+                      ]}
+                    >
+                      Business plan
+                    </Text>
+                  </Pressable>
+                  <Pressable
+                    onPress={() => {
+                      setTeamInfo({ ...teamInfo, stage: 'MVP' })
+                      setActiveStages(3)
+                      setNotActiveStages(1)
+                    }}
+                    style={styles.stage}
+                  >
+                    <Text
+                      style={[
+                        styles.stageText,
+                        {
+                          color:
+                            teamInfo.stage === 'MVP'
+                              ? color.primary
+                              : color.white
+                        }
+                      ]}
+                    >
+                      MVP
+                    </Text>
+                  </Pressable>
+                  <Pressable
+                    onPress={() => {
+                      setTeamInfo({ ...teamInfo, stage: 'PAYING_CUSTOMERS' })
+                      setActiveStages(4)
+                      setNotActiveStages(0)
+                    }}
+                    style={styles.stage}
+                  >
+                    <Text
+                      style={[
+                        styles.stageText,
+                        {
+                          color:
+                            teamInfo.stage === 'PAYING_CUSTOMERS'
+                              ? color.primary
+                              : color.white
+                        }
+                      ]}
+                    >
+                      Paying customers
+                    </Text>
+                  </Pressable>
                 </View>
+              </View>
+              <Text style={styles.sub}>Industries</Text>
+              <View style={styles.tagContainer}>
+                {industries.map((industry) => {
+                  return (
+                    <Pressable
+                      onPress={() => {
+                        if (
+                          isTeamIndustries(
+                            teamInfo.industries.items,
+                            industry.id
+                          )
+                        ) {
+                          let industries = filterTeamIndustry(
+                            teamInfo.industries.items,
+                            industry.id
+                          )
+                          setTeamInfo({
+                            ...teamInfo,
+                            industries: setTeamIndustries(industries)
+                          })
+                        } else {
+                          setTeamInfo({
+                            ...teamInfo,
+                            industries: {
+                              items: [
+                                ...teamInfo.industries.items,
+                                { industry: industry }
+                              ]
+                            }
+                          })
+                        }
+                      }}
+                      key={industry.id}
+                      style={[
+                        styles.tag,
+                        {
+                          backgroundColor: isTeamIndustries(
+                            teamInfo.industries.items,
+                            industry.id
+                          )
+                            ? color.primary
+                            : color.secondary
+                        }
+                      ]}
+                    >
+                      <Text style={styles.tagText}>{industry.name}</Text>
+                    </Pressable>
+                  )
+                })}
+              </View>
+              <Text style={styles.sub}>Capital demand in USD</Text>
+              <TextInput
+                value={teamInfo.capitalDemand?.toString()}
+                onChangeText={(value) =>
+                  setTeamInfo({ ...teamInfo, capitalDemand: value })
+                }
+                onFocus={(e) => {
+                  handleInputBehindKeyboard(e)
+                }}
+                placeholder="Amount in USD"
+                keyboardAppearance="dark"
+                style={[textInput]}
+              />
+              <View
+                style={[
+                  styles.row,
+                  { marginTop: 20, justifyContent: 'space-between' }
+                ]}
+              >
+                <Text style={styles.sub}>Team</Text>
                 {admin === true && (
                   <Pressable
-                    style={styles.memberEdit}
-                    onPress={() => handleEditMemberModal(member)}
+                    onPress={() => showModal('AddMember')}
+                    style={styles.row}
                   >
-                    <FontAwesome5
-                      name="user-edit"
-                      size={28}
-                      color={color.white}
-                    />
+                    <Text style={textNormal}>Add member</Text>
+                    <AntDesign name="adduser" size={30} color={color.primary} />
                   </Pressable>
                 )}
               </View>
-            ))}
-          </View>
-        </Animated.ScrollView>
+              {startup.members.items.map((member) => (
+                <View style={styles.member} key={member.user.id}>
+                  <Image
+                    style={styles.memberAvatar}
+                    source={{
+                      uri: member.user.avatarURI
+                        ? member.user.avatarURI
+                        : avatarPlaceholder
+                    }}
+                  />
+                  <View>
+                    <Text style={styles.memberName}>
+                      {member.user.firstname} {member.user.lastname}
+                    </Text>
+                    <Text style={styles.memberRole}>{member.role}</Text>
+                  </View>
+                  {admin === true && (
+                    <Pressable
+                      style={styles.memberEdit}
+                      onPress={() => handleEditMemberModal(member)}
+                    >
+                      <FontAwesome5
+                        name="user-edit"
+                        size={28}
+                        color={color.white}
+                      />
+                    </Pressable>
+                  )}
+                </View>
+              ))}
+            </View>
+          </Animated.ScrollView>
+        </SafeAreaView>
         <AddTeamMemberModal
           currentMembers={startup.members.items}
           teamID={startup.teamID}
@@ -936,6 +964,9 @@ const UpdateTeam = ({ route }) => {
 }
 
 const styles = StyleSheet.create({
+  scrollview: {
+    paddingBottom: 20
+  },
   container: {
     flex: 1,
     paddingBottom: 100,

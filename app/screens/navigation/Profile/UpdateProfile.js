@@ -16,6 +16,8 @@ import {
   Image,
   Pressable
 } from 'react-native'
+import { useDimensions } from '@react-native-community/hooks'
+
 import * as mime from 'react-native-mime-types'
 
 import { API, Storage } from 'aws-amplify'
@@ -172,13 +174,13 @@ const UpdateProfile = ({ navigation, route }) => {
         />
         <Animated.ScrollView
           style={[
-            scrollContainer,
             styles.scrollview,
+            scrollContainer,
             {
-              transform: [{ translateY: keyboardPosition }]
+              transform: [{ translateY: keyboardPosition }],
+              maxHeight: useDimensions().window.height - 65 - 64
             }
           ]}
-          contentInset={{ bottom: 95 }}
         >
           <Pressable
             onPress={() => {
@@ -306,7 +308,8 @@ const UpdateProfile = ({ navigation, route }) => {
 
 const styles = StyleSheet.create({
   scrollview: {
-    paddingTop: 20
+    marginTop: 20,
+    paddingBottom: 30
   },
   header: {
     marginBottom: 15

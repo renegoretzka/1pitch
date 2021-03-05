@@ -9,6 +9,7 @@ import {
   ScrollView,
   Pressable
 } from 'react-native'
+import { useDimensions } from '@react-native-community/hooks'
 
 import { useUser } from '../../context/User'
 
@@ -45,7 +46,11 @@ const Profile = ({ navigation }) => {
           backgroundColor={color.background}
         />
         <ScrollView
-          style={[scrollContainer, styles.scrollview]}
+          style={[
+            scrollContainer,
+            styles.scrollview,
+            { maxHeight: useDimensions().window.height }
+          ]}
           contentInset={{ bottom: 85 }}
         >
           <View style={styles.userInfo}>

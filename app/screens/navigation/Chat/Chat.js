@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react'
 import {
   Animated,
   Image,
+  Platform,
   Pressable,
   SafeAreaView,
   ScrollView,
@@ -12,7 +13,10 @@ import {
   TextInput,
   View
 } from 'react-native'
+import { useDimensions } from '@react-native-community/hooks'
+
 import { Asset } from 'expo-asset'
+import formatDistanceToNow from 'date-fns/formatDistanceToNow'
 
 import { getMessagesForChannel } from '../../../../graphql/Custom/messages.queries'
 import { newMessage } from '../.././../../graphql/Custom/messages.subscriptions'
@@ -25,19 +29,19 @@ import { Ionicons } from '@expo/vector-icons'
 import useBehindKeyboard from '../../../context/InputBehindKeyboard'
 import { createMessage } from '../../../../graphql/Custom/messages.mutations'
 
+const logoPlaceholder = Asset.fromModule(
+  require('../../../assets/profile_placeholder.png')
+).uri
+
+const avatarPlaceholder = Asset.fromModule(
+  require('../../../assets/profile_placeholder.png')
+).uri
+
 const ChatScreen = ({ navigation, route }) => {
   const { keyboardPosition, handleInputBehindKeyboard } = useBehindKeyboard()
   const [messages, setMessages] = useState([])
-  const [message, setMessage] = useState()
+  const [message, setMessage] = useState('')
   const [scrollView, setScrollView] = useState()
-
-  const logoPlaceholder = Asset.fromModule(
-    require('../../../assets/profile_placeholder.png')
-  ).uri
-
-  const avatarPlaceholder = Asset.fromModule(
-    require('../../../assets/profile_placeholder.png')
-  ).uri
 
   const { channelData } = route.params
 
@@ -123,7 +127,7 @@ const ChatScreen = ({ navigation, route }) => {
         }
       }
     })
-    setMessage()
+    setMessage('')
   }
 
   useEffect(() => {
@@ -232,8 +236,11 @@ const ChatScreen = ({ navigation, route }) => {
       <Animated.View
         style={[
           styles.container,
-          {
+          Platform.OS !== 'web' && {
             transform: [{ translateY: keyboardPosition }]
+          },
+          {
+            maxHeight: useDimensions().window.height - 64
           }
         ]}
         contentInset={{ bottom: 115 }}
@@ -256,7 +263,9 @@ const ChatScreen = ({ navigation, route }) => {
               {message.yourTeam && (
                 <View style={styles.messageTextContainer}>
                   <Text style={styles.message}>{message.content}</Text>
-                  <Text style={styles.timestamp}>{message.createdAt}</Text>
+                  <Text style={styles.timestamp}>
+                    {formatDistanceToNow(new Date(message.createdAt))} ago
+                  </Text>
                 </View>
               )}
               <Image
@@ -288,12 +297,13 @@ const ChatScreen = ({ navigation, route }) => {
               {!message.yourTeam && (
                 <View style={styles.messageTextContainer}>
                   <Text style={styles.message}>{message.content}</Text>
-                  <Text style={styles.timestamp}>{message.createdAt}</Text>
+                  <Text style={styles.timestamp}>
+                    {formatDistanceToNow(new Date(message.createdAt))} ago
+                  </Text>
                 </View>
               )}
             </View>
           ))}
-          <View></View>
         </ScrollView>
         <View style={styles.newMessageContainer}>
           <TextInput

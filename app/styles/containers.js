@@ -3,7 +3,6 @@ import { StatusBar } from 'expo-status-bar'
 
 import { color } from './colors'
 import * as VARS from './variables'
-import { useDimensions } from '@react-native-community/hooks'
 
 export const safeArea = {
   flex: 1,
@@ -15,9 +14,7 @@ export const scrollContainer = {
   paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
   paddingLeft: VARS.SPACING_VIEW,
   paddingRight: VARS.SPACING_VIEW,
-  paddingBottom: Platform.OS === 'ios' ? 105 : 65,
-  backgroundColor: color.background,
-  maxHeight: useDimensions().window.height
+  backgroundColor: color.background
 }
 
 export const textHeader = {
