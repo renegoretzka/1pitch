@@ -8,6 +8,7 @@
     "eject": "expo eject"
   },
   "dependencies": {
+    "@react-native-community/hooks": "^2.6.0",
     "@react-native-community/netinfo": "5.9.7",
     "@react-navigation/bottom-tabs": "5.11.8",
     "@react-navigation/native": "5.9.3",
