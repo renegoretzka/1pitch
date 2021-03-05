@@ -26,6 +26,7 @@ import {
 import { SPACING_VIEW } from '../../styles/variables'
 
 import { Ionicons } from '@expo/vector-icons'
+import { ScrollView } from 'react-native-gesture-handler'
 
 const Teams = ({ navigation }) => {
   const { user } = useUser()
@@ -130,7 +131,7 @@ const Teams = ({ navigation }) => {
   return (
     <SafeAreaView style={safeArea}>
       <StatusBar barStyle="light-content" backgroundColor={color.background} />
-      <View style={styles.container} contentInset={{ bottom: 85 }}>
+      <ScrollView style={styles.container} contentInset={{ bottom: 85 }}>
         <View style={styles.header}>
           <Text style={textHeader}>Your teams</Text>
           {teams.length ? (
@@ -169,7 +170,7 @@ const Teams = ({ navigation }) => {
             </View>
           )}
         </View>
-      </View>
+      </ScrollView>
     </SafeAreaView>
   )
 }
