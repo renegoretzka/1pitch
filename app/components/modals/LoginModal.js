@@ -23,6 +23,7 @@ import Divider from '../ui/Divider'
 import { color } from '../../styles/colors'
 import { Ionicons } from '@expo/vector-icons'
 import { textLink, textNormal } from '../../styles/containers'
+import { Asset } from 'expo-asset'
 
 const LoginModal = ({ userData, navigation }) => {
   const { login, logout, forgotPassword } = useUser()
@@ -34,7 +35,7 @@ const LoginModal = ({ userData, navigation }) => {
 
   const [loading, setLoading] = useState(false)
 
-  const avatarPlaceholder = Image.resolveAssetSource(
+  const avatarPlaceholder = Asset.fromModule(
     require('../../assets/profile_placeholder.png')
   ).uri
 

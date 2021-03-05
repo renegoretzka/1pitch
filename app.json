@@ -1,8 +1,8 @@
 {
   "expo": {
     "name": "1Pitch",
-    "slug": "1Pitch",
-    "version": "1.0.0",
+    "slug": "renka/1pitch",
+    "version": "0.5.1",
     "orientation": "portrait",
     "icon": "./app/assets/icon.png",
     "splash": {
@@ -17,9 +17,12 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "bundleIdentifier": "com.renka.1pitch",
+      "buildNumber": "0.5.1"
     },
     "android": {
+      "package": "com.renka.1pitch",
+      "versionCode": 1,
       "adaptiveIcon": {
         "foregroundImage": "./app/assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
