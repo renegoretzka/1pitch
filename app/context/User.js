@@ -18,9 +18,9 @@ import {
 } from './User/index'
 import { getUserAuthenticated } from '../../graphql/Custom/user.queries'
 import { updatedUserAuthenticated } from '../../graphql/Custom/user.subscriptions'
-import { Image } from 'react-native'
+import { Asset } from 'expo-asset'
 
-const profilePlaceholderURI = Image.resolveAssetSource(
+const profilePlaceholderURI = Asset.fromModule(
   require('../assets/profile_placeholder.png')
 ).uri
 
