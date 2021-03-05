@@ -99,7 +99,19 @@ const InvestorCapital = ({ navigation, route }) => {
               onPress={() =>
                 navigation.push('InvestorInformation', { teamInfo })
               }
-              style={styles.buttonContinue}
+              style={[
+                styles.buttonContinue,
+                !teamInfo.capitalInvestMin || !teamInfo.capitalInvestMax
+                  ? {
+                      backgroundColor: color.primaryOpacity
+                    }
+                  : null
+              ]}
+              disabled={
+                teamInfo.capitalInvestMin && teamInfo.capitalInvestMax
+                  ? false
+                  : true
+              }
             >
               <Text style={styles.buttonContinueText}>Continue</Text>
             </Pressable>
@@ -139,7 +151,7 @@ const styles = StyleSheet.create({
   buttonsContinueBack: {
     flex: 1,
     flexDirection: 'row',
-    alignSelf: 'flex-end'
+    alignSelf: 'stretch'
   },
   buttonBack: {
     flex: 1.5,

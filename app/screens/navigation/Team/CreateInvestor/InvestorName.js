@@ -66,7 +66,11 @@ const InvestorName = ({ navigation, route }) => {
             <View style={styles.buttonsContinueBackSpacing} />
             <Pressable
               onPress={() => navigation.push('InvestorIndustry', { teamInfo })}
-              style={styles.buttonContinue}
+              style={[
+                styles.buttonContinue,
+                !teamInfo.name && { backgroundColor: color.primaryOpacity }
+              ]}
+              disabled={teamInfo.name ? false : true}
             >
               <Text style={styles.buttonContinueText}>Continue</Text>
             </Pressable>
@@ -106,7 +110,7 @@ const styles = StyleSheet.create({
   buttonsContinueBack: {
     flex: 1,
     flexDirection: 'row',
-    alignSelf: 'flex-end'
+    alignSelf: 'stretch'
   },
   buttonBack: {
     flex: 1.5,

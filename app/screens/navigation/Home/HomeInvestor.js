@@ -151,7 +151,7 @@ const HomeInvestor = ({ teamData }) => {
         }
       }
     })
-    console.log(channel)
+    getStartup()
   }
 
   useEffect(() => {

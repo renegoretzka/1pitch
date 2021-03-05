@@ -668,9 +668,11 @@ const UpdateTeam = ({ route }) => {
           />
           <Animated.ScrollView
             style={[
+              styles.scrollview,
               scrollContainer,
               {
-                transform: [{ translateY: keyboardPosition }]
+                transform: [{ translateY: keyboardPosition }],
+                maxHeight: useDimensions().window.height - 65 - 64
               }
             ]}
             contentInset={{ bottom: 115 }}

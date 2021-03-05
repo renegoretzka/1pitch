@@ -2,6 +2,7 @@ import { API, graphqlOperation, Storage } from 'aws-amplify'
 import React, { useEffect, useState } from 'react'
 import {
   Animated,
+  FlatList,
   Image,
   Platform,
   Pressable,
@@ -16,7 +17,6 @@ import {
 import { useDimensions } from '@react-native-community/hooks'
 
 import { Asset } from 'expo-asset'
-import formatDistanceToNow from 'date-fns/formatDistanceToNow'
 
 import { getMessagesForChannel } from '../../../../graphql/Custom/messages.queries'
 import { newMessage } from '../.././../../graphql/Custom/messages.subscriptions'
@@ -28,6 +28,7 @@ import { SPACING_VIEW } from '../../../styles/variables'
 import { Ionicons } from '@expo/vector-icons'
 import useBehindKeyboard from '../../../context/InputBehindKeyboard'
 import { createMessage } from '../../../../graphql/Custom/messages.mutations'
+import MessageItem from '../../../components/ui/MessageItem'
 
 const logoPlaceholder = Asset.fromModule(
   require('../../../assets/profile_placeholder.png')
@@ -40,22 +41,26 @@ const avatarPlaceholder = Asset.fromModule(
 const ChatScreen = ({ navigation, route }) => {
   const { keyboardPosition, handleInputBehindKeyboard } = useBehindKeyboard()
   const [messages, setMessages] = useState([])
+  const [messagesToken, setMessagesToken] = useState([])
   const [message, setMessage] = useState('')
   const [scrollView, setScrollView] = useState()
+  const [fetching, setFetching] = useState(false)
 
   const { channelData } = route.params
 
-  //console.log(channelData)
-
-  const getMessages = async () => {
+  const getMessages = async (nextToken) => {
     try {
+      setFetching(true)
       const { data } = await API.graphql({
         query: getMessagesForChannel,
         variables: {
-          id: channelData.id
+          id: channelData.id,
+          nextToken: nextToken ? nextToken : null
         }
       })
+      setMessagesToken(data.getChannel.messages.nextToken)
       let messagesData = []
+      console.log('test')
       for (let message of data.getChannel.messages.items) {
         const yourTeamInvestor = channelData.investor.yourself ? true : false
         const yourTeamStartup = channelData.startup.yourself ? true : false
@@ -111,7 +116,15 @@ const ChatScreen = ({ navigation, route }) => {
           ]
         }
       }
-      setMessages(messagesData)
+      if (nextToken) {
+        console.log([...messagesData, ...messages])
+      }
+      setFetching(false)
+      setMessages(
+        nextToken
+          ? [...messagesData.reverse(), ...messages]
+          : messagesData.reverse()
+      )
     } catch (error) {
       console.log(error)
     }
@@ -216,6 +229,12 @@ const ChatScreen = ({ navigation, route }) => {
   }, [messages])
 
   useEffect(() => {
+    if (scrollView) {
+      scrollView.scrollToEnd()
+    }
+  }, [messages])
+
+  useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
       const stackNavigator = navigation.dangerouslyGetParent()
       stackNavigator.setOptions({ tabBarVisible: false })
@@ -245,66 +264,23 @@ const ChatScreen = ({ navigation, route }) => {
         ]}
         contentInset={{ bottom: 115 }}
       >
-        <ScrollView
-          style={styles.messagesContainer}
-          ref={(ref) => {
-            setScrollView(ref)
-          }}
-          onContentSizeChange={() => scrollView.scrollToEnd()}
-        >
-          {messages?.map((message) => (
-            <View
-              style={[
-                styles.messageContainer,
-                { justifyContent: message.yourTeam ? 'flex-end' : 'flex-start' }
-              ]}
-              key={message.id}
-            >
-              {message.yourTeam && (
-                <View style={styles.messageTextContainer}>
-                  <Text style={styles.message}>{message.content}</Text>
-                  <Text style={styles.timestamp}>
-                    {formatDistanceToNow(new Date(message.createdAt))} ago
-                  </Text>
-                </View>
-              )}
-              <Image
-                style={[
-                  styles.avatar,
-                  !message.yourTeam
-                    ? { marginRight: -25 }
-                    : { marginLeft: -25, zIndex: 5 }
-                ]}
-                source={{
-                  uri: message.yourTeam
-                    ? message.sender.avatarURI
-                    : message.teamAvatar
-                }}
-              />
-              <Image
-                style={[
-                  styles.avatar,
-                  !message.yourTeam
-                    ? { marginRight: -25, zIndex: 5 }
-                    : { marginLeft: -25 }
-                ]}
-                source={{
-                  uri: message.yourTeam
-                    ? message.teamAvatar
-                    : message.sender.avatarURI
-                }}
-              />
-              {!message.yourTeam && (
-                <View style={styles.messageTextContainer}>
-                  <Text style={styles.message}>{message.content}</Text>
-                  <Text style={styles.timestamp}>
-                    {formatDistanceToNow(new Date(message.createdAt))} ago
-                  </Text>
-                </View>
-              )}
-            </View>
-          ))}
-        </ScrollView>
+        <View style={styles.messagesContainer}>
+          <FlatList
+            data={messages}
+            renderItem={({ item }) => <MessageItem item={item} />}
+            keyExtractor={(item) => item.id}
+            ref={(ref) => {
+              setScrollView(ref)
+            }}
+            onRefresh={() => {
+              if (messagesToken) {
+                getMessages(messagesToken)
+              }
+            }}
+            refreshing={fetching}
+            style={styles.flatlist}
+          />
+        </View>
         <View style={styles.newMessageContainer}>
           <TextInput
             style={styles.newMessage}
@@ -338,31 +314,8 @@ const styles = StyleSheet.create({
   messagesContainer: {
     flex: 1
   },
-  messageContainer: {
-    flexDirection: 'row',
-    marginVertical: 15,
-    marginHorizontal: SPACING_VIEW,
-    alignItems: 'center'
-  },
-  avatar: {
-    height: 40,
-    width: 40,
-    borderRadius: 20
-  },
-  messageTextContainer: {
-    marginHorizontal: 35,
-    paddingVertical: 5,
-    backgroundColor: color.secondary,
-    borderRadius: 15
-  },
-  message: {
-    marginHorizontal: 20,
-    color: color.white,
-    fontSize: 16
-  },
-  timestamp: {
-    marginHorizontal: 20,
-    color: color.lightWhite
+  flatlist: {
+    flex: 1
   },
   newMessageContainer: {
     flexDirection: 'row',

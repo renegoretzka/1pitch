@@ -163,7 +163,13 @@ const StartupStage = ({ navigation, route }) => {
             <View style={styles.buttonsContinueBackSpacing} />
             <Pressable
               onPress={() => navigation.push('StartupCapital', { teamInfo })}
-              style={styles.buttonContinue}
+              style={[
+                styles.buttonContinue,
+                !teamInfo.stage && {
+                  backgroundColor: color.primaryOpacity
+                }
+              ]}
+              disabled={teamInfo.stage ? false : true}
             >
               <Text style={styles.buttonContinueText}>Continue</Text>
             </Pressable>
@@ -203,7 +209,7 @@ const styles = StyleSheet.create({
   buttonsContinueBack: {
     flex: 1,
     flexDirection: 'row',
-    alignSelf: 'flex-end'
+    alignSelf: 'stretch'
   },
   buttonBack: {
     flex: 1.5,

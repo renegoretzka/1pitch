@@ -284,7 +284,7 @@ const styles = StyleSheet.create({
   buttonsContinueBack: {
     flex: 1,
     flexDirection: 'row',
-    alignSelf: 'flex-end'
+    alignSelf: 'stretch'
   },
   buttonBack: {
     flex: 1.5,

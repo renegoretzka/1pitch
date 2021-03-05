@@ -69,7 +69,13 @@ const StartupCapital = ({ navigation, route }) => {
               onPress={() =>
                 navigation.push('StartupInformation', { teamInfo })
               }
-              style={styles.buttonContinue}
+              style={[
+                styles.buttonContinue,
+                !teamInfo.capitalDemand && {
+                  backgroundColor: color.primaryOpacity
+                }
+              ]}
+              disabled={teamInfo.capitalDemand ? false : true}
             >
               <Text style={styles.buttonContinueText}>Continue</Text>
             </Pressable>
@@ -109,7 +115,7 @@ const styles = StyleSheet.create({
   buttonsContinueBack: {
     flex: 1,
     flexDirection: 'row',
-    alignSelf: 'flex-end'
+    alignSelf: 'stretch'
   },
   buttonBack: {
     flex: 1.5,

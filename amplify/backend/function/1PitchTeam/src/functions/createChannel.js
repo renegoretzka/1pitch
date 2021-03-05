@@ -2,6 +2,7 @@ const createModel = require('../helpers/createModel')
 const readModel = require('../helpers/readModel')
 
 const createChannel = async (input) => {
+  // create bookmark contacted
   const startup = await readModel(
     input.startupID,
     process.env.API_1PITCH_STARTUPTABLE_NAME
