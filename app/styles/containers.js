@@ -14,7 +14,7 @@ export const scrollContainer = {
   paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
   paddingLeft: VARS.SPACING_VIEW,
   paddingRight: VARS.SPACING_VIEW,
-  //paddingBottom: Platform.OS === "ios" ? 105 : 65,
+  paddingBottom: Platform.OS === 'ios' ? 105 : 65,
   backgroundColor: color.background
 }
 

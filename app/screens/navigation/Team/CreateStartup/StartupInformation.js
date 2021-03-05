@@ -139,6 +139,7 @@ const StartupInformation = ({ navigation, route }) => {
         }
       }
       setLoading(false)
+      navigation.navigate('Teams')
     } catch (error) {
       setLoading(false)
       console.log('Error from createTeam', error)
