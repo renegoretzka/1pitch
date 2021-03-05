@@ -14,6 +14,12 @@ const CreateTeam = ({ navigation }) => {
 
   const [teamInfo, setTeamInfo] = useState(initialTeamInfo)
 
+  const handleGoBack = () => {
+    const stackNavigator = navigation.dangerouslyGetParent()
+    stackNavigator.setOptions({ tabBarVisible: true })
+    navigation.goBack()
+  }
+
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
       const stackNavigator = navigation.dangerouslyGetParent()
@@ -69,10 +75,7 @@ const CreateTeam = ({ navigation }) => {
             </View>
           </View>
           <View style={styles.buttonsContinueBack}>
-            <Pressable
-              onPress={() => navigation.goBack()}
-              style={styles.buttonBack}
-            >
+            <Pressable onPress={() => handleGoBack()} style={styles.buttonBack}>
               <Text style={styles.buttonBackText}>Back</Text>
             </Pressable>
             <View style={styles.buttonsContinueBackSpacing} />
