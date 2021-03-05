@@ -58,6 +58,7 @@ import {
   updateStartup
 } from '../../../../graphql/mutations'
 import AddTeamMemberModal from '../../../components/modals/AddTeamMemberModal'
+import { Asset } from 'expo-asset'
 
 const UpdateTeam = ({ route }) => {
   const navigation = useNavigation()
@@ -70,11 +71,11 @@ const UpdateTeam = ({ route }) => {
   const { team } = route.params
   const { admin } = route.params
 
-  const logoPlaceholder = Image.resolveAssetSource(
+  const logoPlaceholder = Asset.fromModule(
     require('../../../assets/profile_placeholder.png')
   ).uri
 
-  const avatarPlaceholder = Image.resolveAssetSource(
+  const avatarPlaceholder = Asset.fromModule(
     require('../../../assets/profile_placeholder.png')
   ).uri
 

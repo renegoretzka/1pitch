@@ -54,13 +54,14 @@ import {
 import { Feather } from '@expo/vector-icons'
 import { MaterialCommunityIcons } from '@expo/vector-icons'
 import { Ionicons } from '@expo/vector-icons'
+import { Asset } from 'expo-asset'
 
 const UpdateProfile = ({ navigation, route }) => {
   const { user } = useUser()
   const { pushNotification } = useNotification()
   const { keyboardPosition, handleInputBehindKeyboard } = useBehindKeyboard()
 
-  const avatarPlaceholder = Image.resolveAssetSource(
+  const avatarPlaceholder = Asset.fromModule(
     require('../../../assets/profile_placeholder.png')
   ).uri
 

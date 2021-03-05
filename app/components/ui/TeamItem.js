@@ -8,11 +8,12 @@ import { textNormal, userAvatar } from '../../styles/containers'
 
 import { Ionicons } from '@expo/vector-icons'
 import { SPACING_VIEW } from '../../styles/variables'
+import { Asset } from 'expo-asset'
 
 const TeamItem = ({ item }) => {
   const navigation = useNavigation()
   const { team } = item
-  const avatarPlaceholder = Image.resolveAssetSource(
+  const avatarPlaceholder = Asset.fromModule(
     require('../../assets/profile_placeholder.png')
   ).uri
 
