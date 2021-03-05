@@ -3,7 +3,6 @@ import { Image, StyleSheet, Text, View } from 'react-native'
 
 import formatDistanceToNow from 'date-fns/formatDistanceToNow'
 
-import Divider from './Divider'
 import { color } from '../../styles/colors'
 
 import { SPACING_VIEW } from '../../styles/variables'

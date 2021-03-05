@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "1Pitch",
-    "slug": "renka/1pitch",
+    "slug": "1pitch",
     "version": "0.5.1",
     "orientation": "portrait",
     "icon": "./app/assets/icon.png",

@@ -60,7 +60,6 @@ const ChatScreen = ({ navigation, route }) => {
       })
       setMessagesToken(data.getChannel.messages.nextToken)
       let messagesData = []
-      console.log('test')
       for (let message of data.getChannel.messages.items) {
         const yourTeamInvestor = channelData.investor.yourself ? true : false
         const yourTeamStartup = channelData.startup.yourself ? true : false
@@ -115,9 +114,6 @@ const ChatScreen = ({ navigation, route }) => {
             }
           ]
         }
-      }
-      if (nextToken) {
-        console.log([...messagesData, ...messages])
       }
       setFetching(false)
       setMessages(
