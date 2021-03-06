@@ -205,7 +205,8 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0
+    paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
+    paddingBottom: Platform.OS === 'ios' ? 65 : 0
   },
   safeContainer: {
     paddingLeft: SPACING_VIEW,

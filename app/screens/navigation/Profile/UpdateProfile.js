@@ -59,7 +59,7 @@ import { Ionicons } from '@expo/vector-icons'
 import { Asset } from 'expo-asset'
 
 const UpdateProfile = ({ navigation, route }) => {
-  const { user } = useUser()
+  const { user, setUser } = useUser()
   const { pushNotification } = useNotification()
   const { keyboardPosition, handleInputBehindKeyboard } = useBehindKeyboard()
 
@@ -93,6 +93,29 @@ const UpdateProfile = ({ navigation, route }) => {
       payload: value
     })
   }
+
+  useEffect(() => {
+    let subscription = null
+    if (user.id && !subscription) {
+      subscription = API.graphql({
+        query: updatedUserAuthenticated,
+        variables: { id: user.id }
+      }).subscribe({
+        next: async ({ value }) => {
+          let result = value.data.updatedUser
+          if (result.avatar?.key) {
+            const avatarUri = await Storage.get(result.avatar.key)
+            result.avatar = avatarUri
+          } else {
+            result.avatar = profilePlaceholderURI
+          }
+          setUser({ ...user, result })
+        },
+        error: ({ error }) => console.log(error)
+      })
+      return () => subscription.unsubscribe()
+    }
+  }, [user])
 
   const SuccessIcon = () => (
     <Ionicons name="ios-checkmark-circle-outline" size={30} color="white" />

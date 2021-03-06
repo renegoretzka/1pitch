@@ -109,7 +109,6 @@ const HomeStartup = ({ teamData }) => {
       allowsRecordingIOS: false,
       playsInSilentModeIOS: true
     })
-    console.log(uri)
     setRecording(undefined)
     setIsPlaying(false)
     setRecordURI(uri)
@@ -172,7 +171,7 @@ const HomeStartup = ({ teamData }) => {
   }
 
   useEffect(() => {
-    if (teamData.pitch.key) {
+    if (teamData.pitch?.key) {
       getPitch()
     }
   }, [])

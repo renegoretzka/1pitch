@@ -5,6 +5,7 @@ import React, {
   useMemo,
   useState
 } from 'react'
+
 import { API, Auth, Hub, Storage } from 'aws-amplify'
 import {
   forgotPassword,
@@ -78,31 +79,10 @@ const UserProvider = ({ children }) => {
     return () => Hub.remove('auth', authListener)
   }, [])
 
-  useEffect(() => {
-    let subscription = null
-    if (user.id && !subscription) {
-      subscription = API.graphql({
-        query: updatedUserAuthenticated,
-        variables: { id: user.id }
-      }).subscribe({
-        next: async ({ value }) => {
-          let result = value.data.updatedUser
-          if (result.avatar?.key) {
-            const avatarUri = await Storage.get(result.avatar.key)
-            result.avatar = avatarUri
-          } else {
-            result.avatar = profilePlaceholderURI
-          }
-          setUser({ ...user, result })
-        }
-      })
-      return () => subscription.unsubscribe()
-    }
-  }, [user])
-
   const values = useMemo(() => {
     return {
       user: user,
+      setUser: setUser,
       userIsLoading: loading,
       register: signUp,
       login: signIn,

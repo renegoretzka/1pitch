@@ -11,7 +11,7 @@
     "@react-native-community/hooks": "^2.6.0",
     "@react-native-community/netinfo": "5.9.7",
     "@react-navigation/bottom-tabs": "5.11.8",
-    "@react-navigation/native": "5.9.3",
+    "@react-navigation/native": "^5.9.3",
     "@react-navigation/stack": "5.14.3",
     "aws-amplify": "3.3.20",
     "aws-amplify-react-native": "4.3.1",
@@ -36,8 +36,7 @@
     "react-native-mime-types": "2.3.0",
     "react-native-screens": "~2.15.2",
     "react-native-svg": "12.1.0",
-    "react-native-web": "~0.13.12",
-    "react-navigation": "4.4.4"
+    "react-native-web": "~0.13.12"
   },
   "devDependencies": {
     "@babel/core": "~7.9.0",
