@@ -1,7 +1,6 @@
 const readModel = require('../helpers/readModel')
 
 const authorizerInvestor = async (investorID, identity, callback) => {
-  // TODO: Add logic to check for admin or not using params!
   try {
     const investor = await readModel(
       investorID,
