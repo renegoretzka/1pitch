@@ -2,7 +2,7 @@
   "expo": {
     "name": "1Pitch",
     "slug": "1pitch",
-    "version": "0.5.1",
+    "version": "0.5.2",
     "orientation": "portrait",
     "icon": "./app/assets/icon.png",
     "splash": {
@@ -18,7 +18,7 @@
     ],
     "ios": {
       "bundleIdentifier": "com.renka.onepitch",
-      "buildNumber": "0.5.1"
+      "buildNumber": "0.5.2"
     },
     "android": {
       "package": "com.renka.onepitch",
