@@ -139,6 +139,8 @@ const StartupInformation = ({ navigation, route }) => {
         }
       }
       setLoading(false)
+      const stackNavigator = navigation.dangerouslyGetParent()
+      stackNavigator.setOptions({ tabBarVisible: false })
       navigation.navigate('Teams')
     } catch (error) {
       setLoading(false)
