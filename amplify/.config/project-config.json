@@ -8,10 +8,11 @@
   "javascript": {
     "framework": "react-native",
     "config": {
-      "SourceDir": "./src",
+      "SourceDir": "./",
       "DistributionDir": "./",
       "BuildCommand": "npm.cmd run-script build",
-      "StartCommand": "npm.cmd run-script start"
+      "StartCommand": "npm.cmd run-script start",
+      "ServerlessContainers": true
     }
   }
 }
