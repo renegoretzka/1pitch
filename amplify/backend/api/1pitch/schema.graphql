@@ -226,8 +226,8 @@ type Query {
   me: User @function(name: "1PitchTeam-${env}")
   getNextStartup(input: GetNextStartupInput!): Startup
     @function(name: "1PitchTeam-${env}")
-  getUserByEmail(email: AWSEmail!): User
-    @auth(rules: [{ allow: public, provider: iam }, { allow: private }])
+  #getUserByEmail(email: AWSEmail!): User
+  #  @auth(rules: [{ allow: public, provider: iam }, { allow: private }])
 }
 
 type Mutation {

@@ -23,8 +23,8 @@ amplify/backend/.temp
 build/
 dist/
 node_modules/
-awsconfiguration.json
 aws-exports.js
+awsconfiguration.json
 amplifyconfiguration.json
 amplify-build-config.json
 amplify-gradle-config.json

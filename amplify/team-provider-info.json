@@ -1,14 +1,14 @@
 {
-  "dev": {
+  "datastore": {
     "awscloudformation": {
-      "AuthRoleName": "amplify-1pitch-dev-153412-authRole",
-      "UnauthRoleArn": "arn:aws:iam::437578954155:role/amplify-1pitch-dev-153412-unauthRole",
-      "AuthRoleArn": "arn:aws:iam::437578954155:role/amplify-1pitch-dev-153412-authRole",
+      "AuthRoleName": "amplify-1pitch-datastore-154548-authRole",
+      "UnauthRoleArn": "arn:aws:iam::437578954155:role/amplify-1pitch-datastore-154548-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::437578954155:role/amplify-1pitch-datastore-154548-authRole",
       "Region": "eu-central-1",
-      "DeploymentBucketName": "amplify-1pitch-dev-153412-deployment",
-      "UnauthRoleName": "amplify-1pitch-dev-153412-unauthRole",
-      "StackName": "amplify-1pitch-dev-153412",
-      "StackId": "arn:aws:cloudformation:eu-central-1:437578954155:stack/amplify-1pitch-dev-153412/de045150-7451-11eb-80a2-029990a7caa4",
+      "DeploymentBucketName": "amplify-1pitch-datastore-154548-deployment",
+      "UnauthRoleName": "amplify-1pitch-datastore-154548-unauthRole",
+      "StackName": "amplify-1pitch-datastore-154548",
+      "StackId": "arn:aws:cloudformation:eu-central-1:437578954155:stack/amplify-1pitch-datastore-154548/a48cdce0-8341-11eb-92dc-0a13308c98dc",
       "AmplifyAppId": "dcfkffoferg5e"
     },
     "categories": {
@@ -18,12 +18,12 @@
       },
       "function": {
         "processUserRegistration": {
-          "deploymentBucketName": "amplify-1pitch-dev-153412-deployment",
+          "deploymentBucketName": "amplify-1pitch-datastore-154548-deployment",
           "s3Key": "amplify-builds/processUserRegistration-3831725350616b4a3844-build.zip"
         },
         "1PitchTeam": {
-          "deploymentBucketName": "amplify-1pitch-dev-153412-deployment",
-          "s3Key": "amplify-builds/1PitchTeam-537972715a4250523830-build.zip"
+          "deploymentBucketName": "amplify-1pitch-datastore-154548-deployment",
+          "s3Key": "amplify-builds/1PitchTeam-4a55476b746d74585777-build.zip"
         }
       }
     }
